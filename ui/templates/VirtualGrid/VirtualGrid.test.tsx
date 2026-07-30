@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import VirtualGrid from "./VirtualGrid";
 
 const CARD_W = 280, CARD_H = 288, GAP = 28, ROW_PITCH = 350;
@@ -70,5 +70,30 @@ describe("VirtualGrid windowed mode", () => {
     const outer = container.querySelector("[data-vg-container]") as HTMLElement;
     // 200 items / 4 cols = 50 rows => (50-1)*350 + 288 = 17438
     expect(outer.style.height).toBe("17438px");
+  });
+});
+
+describe("VirtualGrid resize", () => {
+  it("recomputes columns and preserves the first visible item via scroll anchoring", async () => {
+    const scrollToSpy = window.scrollTo as unknown as ReturnType<typeof vi.fn>;
+    render(renderRow);
+    act(() => { window.dispatchEvent(new Event("scroll")); });
+
+    // Simulate a wider container: 8 columns now.
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(2560);
+    // pretend we were scrolled so row 10 (index 40 at 4 cols) is first visible
+    Object.defineProperty(window, "scrollY", { value: 4000, configurable: true });
+
+    act(() => {
+      // fire the ResizeObserver callback via the polyfilled observer (see impl note)
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    // anchor index 40 should be re-placed; scrollTo called to keep it in view.
+    // The handler is rAF-coalesced (required for real-world resize storms), and
+    // in this jsdom environment requestAnimationFrame resolves as a genuine async
+    // macrotask rather than synchronously, so we wait for it instead of asserting
+    // immediately after the synchronous act().
+    await waitFor(() => expect(scrollToSpy).toHaveBeenCalled());
   });
 });

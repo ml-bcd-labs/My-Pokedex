@@ -3,7 +3,7 @@ import styles from "./VirtualGrid.module.css";
 import useIsClient from "./useIsClient";
 import {
   columnsFor, totalRowsFor, totalHeightFor, rowLeftInset,
-  positionFor, visibleRange, type RowRange,
+  positionFor, visibleRange, firstVisibleIndex, scrollTopForIndex, type RowRange,
 } from "./windowing";
 
 // useLayoutEffect on the client (measure before paint), useEffect on the server
@@ -106,6 +106,42 @@ export default function VirtualGrid<T>({
     recomputeRange(); // initial
     return () => { window.removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
   }, [metrics, recomputeRange]);
+
+  // --- SUBSCRIBE: container width changes. Card geometry is intrinsic and does
+  // NOT change on resize (resolution changes go through remeasureKey), so we only
+  // refresh containerWidth/containerTop and re-anchor scroll to the first visible
+  // item so the user keeps their place when the column count changes.
+  useIsoLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    let raf = 0;
+    const handle = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const m = metricsRef.current;
+        if (!m) return;
+        const oldCols = columnsFor(m.containerWidth, m.cardW, m.colGap);
+        const anchor = firstVisibleIndex(window.scrollY, m.containerTop, m.rowPitch, oldCols);
+        const containerWidth = el.clientWidth;
+        const containerTop = el.getBoundingClientRect().top + window.scrollY;
+        setMetrics({ ...m, containerWidth, containerTop });
+        const newCols = columnsFor(containerWidth, m.cardW, m.colGap);
+        window.scrollTo(0, scrollTopForIndex(anchor, containerTop, m.rowPitch, newCols));
+      });
+    };
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(handle);
+      ro.observe(el);
+    } else {
+      window.addEventListener("resize", handle);
+    }
+    return () => {
+      if (ro) ro.disconnect(); else window.removeEventListener("resize", handle);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   // --- FLOW PHASE (SSR, first render, or awaiting measurement) ---
   if (!isClient || !metrics || !columns) {

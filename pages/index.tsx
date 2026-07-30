@@ -1,4 +1,4 @@
-import React, { useState, useContext, memo, useEffect } from "react";
+import React, { useContext, memo, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styles from "./Home.module.css";
 import LoadingContext from "../context/LoadingContext";
@@ -12,8 +12,8 @@ import EmptyListPlaceholder from "../ui/components/EmptyListPlaceholder/EmptyLis
 import Header from "../ui/components/Header/Header";
 import Pokemon from "../ui/components/Pokemon/Pokemon";
 import ErrorScreenWrapper from "../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
-import FlexboxList from "../ui/templates/FlexboxList/FlexboxList";
 import Page from "../ui/templates/Page/Page";
+import VirtualGrid from "../ui/templates/VirtualGrid/VirtualGrid";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
 import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
 import { hreflangAlternates } from "../utils/hreflang";
@@ -25,10 +25,6 @@ interface IProps {
   pokemons: IBasicPokemon[];
 }
 
-// Render 16 up front so the first paint already overflows the viewport. Fewer
-// leaves no scrollbar, then loading more pops it in and the layout jumps; 16
-// keeps the scrollbar present and stable from the first render.
-const POKEMON_STACK_SIZE = 16;
 const ABOVE_THE_FOLD = 6;
 
 const HomePage = ({ pokemons }: IProps) => {
@@ -37,25 +33,12 @@ const HomePage = ({ pokemons }: IProps) => {
   const { resolution } = useContext(ResolutionContext);
   const { setPokemons, setFilteredPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
   const { setLoading, loading } = useContext(LoadingContext);
-  const [numberOfPokemonShown, setNumberOfPokemonShown] = useState(POKEMON_STACK_SIZE);
 
   // The context is seeded client-side (useEffect below), so on the server and the
   // first client render it's empty. Fall back to the SSG `pokemons` prop so the
   // first cards — including the LCP hero image — are in the server HTML and paint
   // without waiting for hydration. Once seeded, defer to the filtered list.
   const listSource = ctxPokemons.length ? filteredPokemons : pokemons;
-
-  const incrementNumberOfPokemonShown = () => setNumberOfPokemonShown(numberOfPokemonShown + POKEMON_STACK_SIZE);
-
-  // The first row is the LCP candidate: render those heroes eagerly with high
-  // fetch priority instead of lazy, so the browser doesn't deprioritize them.
-  const renderPokemon = (pokemon: IBasicPokemon, index: number) => (
-    <Pokemon key={pokemon.id} priority={index < ABOVE_THE_FOLD} {...pokemon} />
-  );
-
-  const renderPokemons = () => listSource.slice(0, numberOfPokemonShown).map(renderPokemon);
-
-  const areThereMorePokemonsToShow = () => numberOfPokemonShown >= listSource.length;
 
   const updatePokemons = () => {
     if (pokemons) {
@@ -72,7 +55,7 @@ const HomePage = ({ pokemons }: IProps) => {
   useEffect(updatePokemons, [pokemons, setLoading, setPokemons, setFilteredPokemons]);
 
   useEffect(() => {
-    filteredPokemons.slice(0, POKEMON_STACK_SIZE).forEach((pokemon) => {
+    filteredPokemons.slice(0, ABOVE_THE_FOLD).forEach((pokemon) => {
       const { pixelImageUrl, hdImageUrl } = cardImageUrls(pokemon.id);
       const url = resolution === LOW_RESOLUTION ? pixelImageUrl : hdImageUrl;
       ReactDOM.preload(url, { as: "image", fetchPriority: "high" });
@@ -115,13 +98,19 @@ const HomePage = ({ pokemons }: IProps) => {
               {ctxPokemons.length ? `${listSource.length} Pokémon` : null}
             </div>
             <div className={styles.container}>
-              <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
-                {renderPokemons()}
-              </FlexboxList>
+              <VirtualGrid
+                items={listSource}
+                getKey={(pokemon) => pokemon.id}
+                renderItem={(pokemon, index) => (
+                  <Pokemon priority={index < ABOVE_THE_FOLD} {...pokemon} />
+                )}
+                remeasureKey={resolution}
+              />
             </div>
             {/* Server-rendered crawlable index of every Pokémon: brings all ~1025
                 detail pages to one click from the homepage (the interactive grid
-                above only ships 16 links in the static HTML). */}
+                above only ships its initial flow-rendered batch of links in the
+                static HTML before windowing kicks in). */}
             <BrowseIndex
               heading={strings.browsePokemonHeading}
               ariaLabel={strings.browsePokemonAria}

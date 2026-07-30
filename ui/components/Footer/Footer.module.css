@@ -36,9 +36,26 @@
 }
 
 .disclaimer {
-  max-width: 60ch;
+  /* As wide as the page content column (Page template caps at 1000px) so the
+     legal blurb reads across fewer lines and takes less vertical space, instead
+     of the narrow 60ch column that wrapped it into ~6 lines. */
+  max-width: 1000px;
   margin: 0 auto 0.5rem;
   opacity: 0.75;
+}
+
+/* The pixel font is chunky/wide; drop the footer text a notch in low-res mode so
+   the now-wider disclaimer still reads compactly. */
+:global([data-resolution="low res."]) .footer {
+  font-size: 0.68rem;
+}
+
+/* Accented letters in the links (e.g. the À in "À propos") fall back to the HD
+   font, which — unlike the always-chunky pixel font — has distinct weights. Bold
+   the links in low-res so those fallback glyphs match the weight of the pixel
+   text beside them instead of looking thin. */
+:global([data-resolution="low res."]) .footer .links a {
+  font-weight: bold;
 }
 
 /* Blend the legal links into the footer's own text tone instead of the loud

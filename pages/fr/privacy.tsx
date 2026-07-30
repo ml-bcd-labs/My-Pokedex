@@ -16,7 +16,7 @@ const PrivacyPageFr = () => (
     <Page>
       <LegalLayout heading="Politique de confidentialité" updated="13 juillet 2026" updatedLabel="Dernière mise à jour">
         <p>
-          Cette politique de confidentialité explique comment {SITE_NAME}
+          Cette politique de confidentialité explique comment {SITE_NAME}{" "}
           («&nbsp;nous&nbsp;») traite les informations lorsque vous visitez ce site.
         </p>
 

@@ -4,6 +4,7 @@ import {
   enTypeComboItems,
   frTypeComboItems,
   pokemonBrowseItems,
+  groupAlphabetically,
 } from "./browseIndex";
 
 describe("typeSlugLabel", () => {
@@ -50,5 +51,44 @@ describe("pokemonBrowseItems", () => {
       { href: "/fr/pokemon/bulbasaur", label: "Bulbizarre" },
       { href: "/fr/pokemon/pikachu", label: "Pikachu" },
     ]);
+  });
+});
+
+describe("groupAlphabetically", () => {
+  it("groups by first letter, with buckets and items each sorted A→Z", () => {
+    const items = [
+      { href: "/c", label: "Charmander" },
+      { href: "/a2", label: "Arbok" },
+      { href: "/a1", label: "Abra" },
+      { href: "/b", label: "Bulbasaur" },
+    ];
+    const groups = groupAlphabetically(items, "en");
+    expect(groups.map((g) => g.letter)).toEqual(["A", "B", "C"]);
+    expect(groups[0].items.map((i) => i.label)).toEqual(["Abra", "Arbok"]);
+  });
+
+  it("files accented names under their base letter (É → E)", () => {
+    const groups = groupAlphabetically(
+      [
+        { href: "/e1", label: "Électhor" },
+        { href: "/e2", label: "Écayon" },
+      ],
+      "fr",
+    );
+    expect(groups).toHaveLength(1);
+    expect(groups[0].letter).toBe("E");
+    expect(groups[0].items).toHaveLength(2);
+  });
+
+  it("puts non-letter initials in a trailing # bucket", () => {
+    const groups = groupAlphabetically(
+      [
+        { href: "/z", label: "Zubat" },
+        { href: "/n", label: "10,000,000 Volt" },
+      ],
+      "en",
+    );
+    expect(groups.map((g) => g.letter)).toEqual(["Z", "#"]);
+    expect(groups[1].key).toBe("#");
   });
 });

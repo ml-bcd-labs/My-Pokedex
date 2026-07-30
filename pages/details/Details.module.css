@@ -28,11 +28,13 @@
 :global([data-resolution="low res."]) .wrap {
   --font-scale: calc(0.8 * var(--font-boost));
 }
-/* Per-resolution font with an arial fallback so glyphs the pixel font lacks
-   (accents like é, chevrons ‹ ›) still render instead of disappearing. */
+/* Per-resolution font with the HD Pokémon font as fallback so glyphs the pixel
+   font maps to blank (uppercase accents like É, œ, guillemets « », curly ’)
+   render on-brand instead of disappearing. Requires the pixel @font-face's
+   unicode-range, which frees these codepoints to fall through to the fallback. */
 :global([data-resolution="low res."]) .wrap,
 :global([data-resolution="low res."]) .wrap * {
-  font-family: "PixelPokemonFont", arial, sans-serif !important;
+  font-family: "PixelPokemonFont", "HdPokemonFont", sans-serif !important;
 }
 :global([data-resolution="high res."]) .wrap,
 :global([data-resolution="high res."]) .wrap * {
@@ -166,6 +168,14 @@
   max-width: 90%;
   object-fit: contain;
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.32));
+}
+
+/* HD artwork fills its box tightly, whereas the pixel sprite carries ~140px of
+   transparent padding that reads as breathing room. Give the HD picture matching
+   vertical margin so its footprint (and the space around the artwork) lines up
+   with the pixel layout instead of sitting cramped against the name and panels. */
+:global([data-resolution="high res."]) .heroImg {
+  margin: 60px auto 60px;
 }
 
 /* Pixelated (low-res) only: bigger sprite, tighter vertical spacing and a

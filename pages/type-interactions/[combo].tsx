@@ -6,11 +6,14 @@ import TypePicker from "../../ui/components/TypePicker/TypePicker";
 import TypeMatchups from "../../ui/components/TypeMatchups/TypeMatchups";
 import TypeIntro from "../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../ui/templates/Page/Page";
+import BrowseIndex from "../../ui/components/BrowseIndex/BrowseIndex";
 import { allTypeSlugs, parseTypeSlug } from "../../utils/typeSlug";
 import { toFrTypeSlug } from "../../utils/frTypeSlug";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
 import { capitalizeFirstLetter } from "../../utils/stringManipulation";
+import { enTypeComboItems, groupAlphabetically } from "../../utils/browseIndex";
+import { useStrings } from "../../hooks/useLocale";
 import type { SwitchTarget } from "../../context/SwitchTargetContext";
 
 interface IProps {
@@ -20,6 +23,7 @@ interface IProps {
 }
 
 const ComboPage = ({ combo, types }: IProps) => {
+  const strings = useStrings();
   const label = types.map(capitalizeFirstLetter).join(" / ");
   const noun = types.length > 1 ? "Types" : "Type";
 
@@ -43,6 +47,15 @@ const ComboPage = ({ combo, types }: IProps) => {
           <TypeMatchups selected={types} />
         </div>
       </Page>
+      {/* Same crawlable A–Z index as the /type-interactions hub, kept on every
+          combo page so it's present at all times (selecting a type navigates
+          here). Pinned to the bottom of <main>, just above the footer. */}
+      <BrowseIndex
+        pinBottom
+        heading={strings.browseTypesHeading}
+        ariaLabel={strings.browseTypesAria}
+        sections={groupAlphabetically(enTypeComboItems(), "en")}
+      />
     </>
   );
 };

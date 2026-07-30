@@ -13,7 +13,7 @@ import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
 import { useStrings } from "../../hooks/useLocale";
 import BrowseIndex from "../../ui/components/BrowseIndex/BrowseIndex";
-import { enTypeComboItems } from "../../utils/browseIndex";
+import { enTypeComboItems, groupAlphabetically } from "../../utils/browseIndex";
 
 const TypeInteractionsPage = () => {
   const strings = useStrings();
@@ -39,22 +39,22 @@ const TypeInteractionsPage = () => {
         ])}
       />
       <Page>
-        <>
-          <div className={styles.container}>
-            <TypeIntro selected={selected} />
-            <TypePicker selected={selected} />
-            <TypeMatchups selected={selected} />
-          </div>
-          {/* Crawlable index of every single/dual-type matchup page. The picker
-              above is a client-side filter, so without this the 171 combo pages
-              have no internal links and are orphaned. */}
-          <BrowseIndex
-            heading={strings.browseTypesHeading}
-            ariaLabel={strings.browseTypesAria}
-            items={enTypeComboItems()}
-          />
-        </>
+        <div className={styles.container}>
+          <TypeIntro selected={selected} />
+          <TypePicker selected={selected} />
+          <TypeMatchups selected={selected} />
+        </div>
       </Page>
+      {/* Crawlable index of every single/dual-type matchup page. The picker is a
+          client-side filter, so without this the 171 combo pages have no internal
+          links and are orphaned. Outside <Page> and pinned to the bottom of
+          <main> so it sits just above the footer even when nothing is selected. */}
+      <BrowseIndex
+        pinBottom
+        heading={strings.browseTypesHeading}
+        ariaLabel={strings.browseTypesAria}
+        sections={groupAlphabetically(enTypeComboItems(), "en")}
+      />
     </>
   );
 };

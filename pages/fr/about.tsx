@@ -16,7 +16,7 @@ const AboutPageFr = () => (
     <Page>
       <LegalLayout heading={`À propos de ${SITE_NAME}`} updated="19 juin 2026" updatedLabel="Dernière mise à jour">
         <p>
-          {SITE_NAME} est une référence indépendante, créée par des fans, pour
+          {SITE_NAME}{" "}est une référence indépendante, créée par des fans, pour
           explorer les Pokémon par type, statistiques de base, talents, faiblesses
           et évolutions. Chaque tableau de statistiques et chaque table
           d&apos;efficacité des types de ce site est compilé de manière indépendante
@@ -32,7 +32,7 @@ const AboutPageFr = () => (
 
         <h2>Marques &amp; affiliation</h2>
         <p>
-          {SITE_NAME} n&apos;est ni affilié à, ni approuvé ou sponsorisé par
+          {SITE_NAME}{" "}n&apos;est ni affilié à, ni approuvé ou sponsorisé par
           Nintendo, Game Freak ou The Pokémon Company. Pokémon, les noms de
           personnages Pokémon et les marques associées sont des marques déposées de
           Nintendo. Ils sont utilisés ici de manière nominative, pour identifier les

@@ -1,0 +1,26 @@
+/* ui/templates/VirtualGrid/VirtualGrid.module.css */
+
+/* Measure phase & SSR: identical to the current grid so flow layout is real
+   and viewport-correct at any width. Mirrors FlexboxList.module.css .flexbox. */
+.flow {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+/* Windowed phase: full-height positioning context. */
+.windowed {
+  position: relative;
+  width: 100%;
+}
+
+/* Each windowed item: absolutely positioned, no margin/padding so the child
+   card's own margin-top and sprite overhang render exactly as in flow. */
+.cell {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

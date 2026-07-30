@@ -7,7 +7,7 @@
     "sitemap": "tsx scripts/generateSitemap.mjs",
     "build-candidate": "POKEDEX_SNAPSHOT=record tsx scripts/buildCandidate.mjs",
     "fetch:candidate": "npm run build-candidate && node scripts/downloadPokemonImages.mjs \"$(jq -r .recordCount data/candidate/manifest.json)\"",
-    "validate": "POKEDEX_SNAPSHOT=replay POKEDEX_SNAPSHOT_FILE=data/candidate/latest.json tsx scripts/validateCandidate.mjs",
+    "validate": "POKEDEX_SNAPSHOT=replay tsx scripts/validateCandidate.mjs",
     "build:snapshot": "POKEDEX_SNAPSHOT=replay tsx scripts/generateSitemap.mjs && POKEDEX_SNAPSHOT=replay next build",
     "predev": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs",
     "dev": "next dev --turbopack",

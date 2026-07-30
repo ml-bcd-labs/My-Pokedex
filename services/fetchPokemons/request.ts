@@ -156,7 +156,6 @@ export const createRequest = (opts: CreateRequestOptions) => {
 
 export interface RuntimeEnv {
   POKEDEX_SNAPSHOT?: string;
-  POKEDEX_SNAPSHOT_FILE?: string;
 }
 
 export const resolveMode = (env: RuntimeEnv): RequestMode =>
@@ -192,9 +191,15 @@ const initRuntime = async () => {
   if (mode === "replay") {
     // Dynamic import keeps node:fs out of the client bundle; this path only runs
     // server-side (getStaticProps) or in build scripts.
+    //
+    // The path is the bare DEFAULT_SNAPSHOT_FILE literal — deliberately NOT an
+    // env-driven variable. `next build` never overrides the snapshot file, and a
+    // dynamic path here makes Turbopack's file tracer treat it as "could be any
+    // file" and trace the whole project (the over-bundling / NFT warning). Build
+    // scripts that need a different file (validate → data/candidate/latest.json)
+    // inject it via seedReplayRuntime() before the first request instead.
     const { readFile } = await import("node:fs/promises");
-    const file = env.POKEDEX_SNAPSHOT_FILE || DEFAULT_SNAPSHOT_FILE;
-    const raw = await readFile(file, "utf8");
+    const raw = await readFile(DEFAULT_SNAPSHOT_FILE, "utf8");
     const store = createSnapshotStore(JSON.parse(raw) as SnapshotData);
     return { request: createRequest({ mode, store }), store };
   }
@@ -210,6 +215,20 @@ const initRuntime = async () => {
 // Concurrent callers (mapWithConcurrency fan-out) share one init promise, so the
 // snapshot file is read once and one store is captured into.
 const getRuntime = (): Runtime => (globalSlots[RUNTIME_KEY] ??= initRuntime());
+
+// Build-script hook (NOT used by the app or any Next page): pre-seed the runtime
+// with an already-loaded replay snapshot so the fetchers replay against it instead
+// of the default file. scripts/validateCandidate calls this before the first
+// request, passing the candidate snapshot it has already read. Kept as a pure
+// in-memory seed — no fs read — so request.ts carries no dynamic file path for
+// Turbopack's tracer to glob on. Must run before the first getRuntime() call.
+export const seedReplayRuntime = (data: SnapshotData): void => {
+  const store = createSnapshotStore(data);
+  globalSlots[RUNTIME_KEY] = Promise.resolve({
+    request: createRequest({ mode: "replay", store }),
+    store,
+  });
+};
 
 export const getRequest = async () => (await getRuntime()).request;
 

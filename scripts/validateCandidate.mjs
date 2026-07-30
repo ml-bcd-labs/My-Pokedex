@@ -2,7 +2,9 @@
 // mode and exits with the code bin/run-site.sh expects:
 //   0 OK · 3 HOLD (serve last-good, warn) · 1 HARD FAIL (quarantine, red)
 // Guards: emptiness, required-field null-rate, monotonic dex-count floor, FR coverage.
-// Run via: POKEDEX_SNAPSHOT=replay POKEDEX_SNAPSHOT_FILE=data/candidate/latest.json tsx …
+// Run via: POKEDEX_SNAPSHOT=replay tsx scripts/validateCandidate.mjs
+// (the candidate snapshot is seeded into the request runtime in-memory below —
+// see seedReplayRuntime — so no POKEDEX_SNAPSHOT_FILE override is needed.)
 import { readFileSync, existsSync } from "node:fs";
 import { classifyValidation } from "./validateCandidate.logic.ts";
 
@@ -40,6 +42,13 @@ const main = async () => {
     const prev = Number(readJson("data/manifest.json").recordCount);
     if (Number.isFinite(prev)) lastKnown = prev;
   }
+
+  // Seed the request runtime with the candidate snapshot we already loaded, so the
+  // FR coverage replay below reads it (not the promoted data/latest.json). Done
+  // in-memory — request.ts deliberately has no env-driven file path (a dynamic
+  // readFile there makes Turbopack trace the whole project at `next build`).
+  const { seedReplayRuntime } = await import("../services/fetchPokemons/request.ts");
+  seedReplayRuntime(snapshot);
 
   // FR coverage against the candidate snapshot (replays species/types/abilities).
   const { fetchFrRawDataset } = await import("../services/fetchPokemons/fetchFrData.ts");

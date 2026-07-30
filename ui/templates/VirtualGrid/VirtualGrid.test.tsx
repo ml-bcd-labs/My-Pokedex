@@ -79,21 +79,26 @@ describe("VirtualGrid resize", () => {
     render(renderRow);
     act(() => { window.dispatchEvent(new Event("scroll")); });
 
-    // Simulate a wider container: 8 columns now.
+    // Simulate a wider container: 8 columns now (a genuine WIDTH change, so the
+    // resize handler's width guard must NOT skip it).
     vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(2560);
-    // pretend we were scrolled so row 10 (index 40 at 4 cols) is first visible
+    // pretend we were scrolled so row 11 (index 44 at 4 cols) is first visible:
+    // firstVisibleIndex(4000, containerTop=0, 350, 4) = floor(4000/350)*4 = 11*4 = 44
     Object.defineProperty(window, "scrollY", { value: 4000, configurable: true });
 
     act(() => {
-      // fire the ResizeObserver callback via the polyfilled observer (see impl note)
+      // jsdom has no real ResizeObserver, so the component falls back to the
+      // window "resize" listener; fire that fallback directly.
       window.dispatchEvent(new Event("resize"));
     });
 
-    // anchor index 40 should be re-placed; scrollTo called to keep it in view.
+    // anchor index 44 (row 11) should be re-placed at 8 columns:
+    // scrollTopForIndex(44, containerTop=4000, 350, 8) = 4000 + floor(44/8)*350 = 5750
+    // (containerTop is recomputed as rect.top(0) + scrollY(4000) per the mock above).
     // The handler is rAF-coalesced (required for real-world resize storms), and
     // in this jsdom environment requestAnimationFrame resolves as a genuine async
     // macrotask rather than synchronously, so we wait for it instead of asserting
     // immediately after the synchronous act().
-    await waitFor(() => expect(scrollToSpy).toHaveBeenCalled());
+    await waitFor(() => expect(scrollToSpy).toHaveBeenCalledWith(0, 5750));
   });
 });

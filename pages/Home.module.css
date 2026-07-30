@@ -1,7 +1,14 @@
+/* No justify-content/justify-items centering: this grid's only child is
+   VirtualGrid, whose .flow and .windowed variants already center their own
+   card rows internally (flex justify-content / rowLeftInset). Centering the
+   grid ITEM itself here would force a shrink-to-fit width computation on it;
+   .windowed's children are all position: absolute (zero intrinsic size), so
+   that shrink-to-fit width resolves to a hard 0, corrupting
+   VirtualGrid's measured containerWidth and collapsing the grid to one
+   column. Default (stretch) sizing keeps the item's width equal to the full
+   available column width, which VirtualGrid needs to compute real geometry. */
 .container {
   display: grid;
-  justify-content: center;
-  justify-items: center;
   row-gap: 15px;
 }
 

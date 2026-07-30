@@ -11,10 +11,18 @@
   gap: 28px;
 }
 
-/* Windowed phase: full-height positioning context. */
+/* Windowed phase: full-height positioning context.
+   justify-self: stretch overrides the parent grid's `justify-items: center`
+   (Home.module.css .container) for this item specifically. Without it, this
+   element's used width is computed by shrink-to-fit, and since its only
+   children are position: absolute (contributing zero intrinsic width), that
+   resolves to a hard 0 on every render -- not a timing glitch, a permanent
+   structural 0 -- which corrupts metrics.containerWidth and collapses the
+   grid to a single column via VirtualGrid.tsx's resize handler. */
 .windowed {
   position: relative;
   width: 100%;
+  justify-self: stretch;
 }
 
 /* Each windowed item: absolutely positioned, no margin/padding so the child

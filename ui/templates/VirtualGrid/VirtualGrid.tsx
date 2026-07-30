@@ -19,6 +19,9 @@ interface VirtualGridProps<T> {
   items: T[];
   getKey: (item: T) => string | number;
   renderItem: (item: T, index: number) => React.ReactNode;
+  // Must over-provision MORE than one row's worth of flow-rendered items:
+  // measureGrid derives rowPitch from the first card on a *second* row and
+  // returns null (grid never enters windowed mode) if only one row exists.
   initialCount?: number;
   overscanRows?: number;
   remeasureKey?: unknown;
@@ -121,9 +124,31 @@ export default function VirtualGrid<T>({
         raf = 0;
         const m = metricsRef.current;
         if (!m) return;
+        const containerWidth = el.clientWidth;
+        // Guard 1: the container's HEIGHT changes when we switch from flow to
+        // windowed layout (and again on filter-driven item-count changes),
+        // which itself fires as an observed "resize". Card geometry is
+        // intrinsic and only WIDTH ever changes column count, so a
+        // height-only resize must be a complete no-op here -- otherwise this
+        // re-anchors (and scrollTo(0, ...)) on initial load, scrolling the
+        // page past the header.
+        //
+        // Guard 2 (defense-in-depth): a laid-out container can never
+        // legitimately report a non-positive width. This is belt-and-suspenders
+        // for consumers whose CSS gives this item a non-stretched (e.g.
+        // centered) containing block: .windowed's only children are
+        // position: absolute (zero intrinsic size), so on such a layout its
+        // shrink-to-fit width resolves to a hard 0 -- observed here as an RO
+        // notification firing with containerWidth 0 right after the
+        // flow->windowed swap. (VirtualGrid.module.css's own `.windowed` sets
+        // justify-self: stretch, and callers should give this element a
+        // stretched/definite-width containing block, so this should no
+        // longer trigger in practice -- but if it ever does, treat it as an
+        // invalid observation rather than corrupting metrics.containerWidth to
+        // 0, which would permanently collapse the grid to a single column.)
+        if (containerWidth <= 0 || containerWidth === m.containerWidth) return;
         const oldCols = columnsFor(m.containerWidth, m.cardW, m.colGap);
         const anchor = firstVisibleIndex(window.scrollY, m.containerTop, m.rowPitch, oldCols);
-        const containerWidth = el.clientWidth;
         const containerTop = el.getBoundingClientRect().top + window.scrollY;
         setMetrics({ ...m, containerWidth, containerTop });
         const newCols = columnsFor(containerWidth, m.cardW, m.colGap);

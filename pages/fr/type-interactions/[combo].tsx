@@ -6,11 +6,14 @@ import TypePicker from "../../../ui/components/TypePicker/TypePicker";
 import TypeMatchups from "../../../ui/components/TypeMatchups/TypeMatchups";
 import TypeIntro from "../../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../../ui/templates/Page/Page";
+import BrowseIndex from "../../../ui/components/BrowseIndex/BrowseIndex";
 import { allFrTypeSlugs, parseFrTypeSlug } from "../../../utils/frTypeSlug";
 import { toTypeSlug } from "../../../utils/typeSlug";
 import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import { hreflangAlternates } from "../../../utils/hreflang";
+import { frTypeComboItems, groupAlphabetically } from "../../../utils/browseIndex";
+import { useStrings } from "../../../hooks/useLocale";
 import type { SwitchTarget } from "../../../context/SwitchTargetContext";
 
 interface IProps {
@@ -20,6 +23,7 @@ interface IProps {
 }
 
 const FrComboPage = ({ combo, types }: IProps) => {
+  const strings = useStrings();
   const label = types.map((t) => FR_TYPE_LABELS[t] ?? capitalizeFirstLetter(t)).join(" / ");
 
   return (
@@ -39,6 +43,15 @@ const FrComboPage = ({ combo, types }: IProps) => {
           <TypeMatchups selected={types} />
         </div>
       </Page>
+      {/* Même index explorable A–Z que le hub /fr/type-interactions, présent sur
+          chaque page de combo (sélectionner un type navigue ici). Épinglé au bas
+          de <main>, juste au-dessus du pied de page. */}
+      <BrowseIndex
+        pinBottom
+        heading={strings.browseTypesHeading}
+        ariaLabel={strings.browseTypesAria}
+        sections={groupAlphabetically(frTypeComboItems(), "fr")}
+      />
     </>
   );
 };

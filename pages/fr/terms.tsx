@@ -25,7 +25,7 @@ const TermsPageFr = () => (
         <h2>Contenu &amp; propriété intellectuelle</h2>
         <p>
           Pokémon et les marques associées sont des marques déposées de Nintendo,
-          Game Freak et The Pokémon Company&nbsp;; {SITE_NAME} n&apos;y est pas
+          Game Freak et The Pokémon Company&nbsp;; {SITE_NAME}{" "}n&apos;y est pas
           affilié (voir notre <a href="/fr/about">page À propos</a>). Les données
           compilées de manière indépendante sur ce site peuvent être citées avec
           attribution.
@@ -33,7 +33,7 @@ const TermsPageFr = () => (
 
         <h2>Responsabilité</h2>
         <p>
-          {SITE_NAME} ne saurait être tenu responsable de tout dommage résultant de
+          {SITE_NAME}{" "}ne saurait être tenu responsable de tout dommage résultant de
           l&apos;utilisation du site ou de la confiance accordée à ses données.
         </p>
       </LegalLayout>

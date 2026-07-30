@@ -19,7 +19,7 @@ import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
 import { hreflangAlternates } from "../utils/hreflang";
 import { useStrings } from "../hooks/useLocale";
 import BrowseIndex from "../ui/components/BrowseIndex/BrowseIndex";
-import { pokemonBrowseItems } from "../utils/browseIndex";
+import { pokemonBrowseItems, groupAlphabetically } from "../utils/browseIndex";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -125,7 +125,7 @@ const HomePage = ({ pokemons }: IProps) => {
             <BrowseIndex
               heading={strings.browsePokemonHeading}
               ariaLabel={strings.browsePokemonAria}
-              items={pokemonBrowseItems(pokemons, "/pokemon/")}
+              sections={groupAlphabetically(pokemonBrowseItems(pokemons, "/pokemon/"), "en")}
             />
           </>
         </Page>

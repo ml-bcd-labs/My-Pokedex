@@ -15,7 +15,7 @@ const PrivacyPage = () => (
     <Page>
       <LegalLayout heading="Privacy Policy" updated="July 13, 2026">
         <p>
-          This Privacy Policy explains how {SITE_NAME} (&quot;we&quot;, &quot;us&quot;)
+          This Privacy Policy explains how {SITE_NAME}{" "}(&quot;we&quot;, &quot;us&quot;)
           handles information when you visit this site.
         </p>
 

@@ -1,6 +1,9 @@
+/* Discreet, footer-adjacent A–Z index. Sits at the very bottom of the page as
+   quiet chrome — a hairline-separated disclosure rather than a boxed panel that
+   competes with the content (and the LCP card grid) above it. */
 .browse {
   max-width: 1200px;
-  margin: 2rem auto 3rem;
+  margin: 2.5rem auto 1rem;
   padding: 0 1rem;
   width: 100%;
   /* Global box-sizing is content-box, so width:100% + 1rem padding overflowed
@@ -8,29 +11,82 @@
   box-sizing: border-box;
 }
 
+/* Push the index to the bottom of a flex-column <main>, keeping it just above
+   the footer even when the page content above is short (e.g. the type chart with
+   nothing selected). Horizontal auto-centering from .browse is preserved. */
+.pinBottom {
+  margin-top: auto;
+}
+
+/* No heavy card — just a hairline rule marking the boundary from the content
+   above. */
 .details {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.6);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .summary {
   cursor: pointer;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 0.25rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(0, 0, 0, 0.55);
   list-style-position: inside;
   user-select: none;
+}
+.summary:hover {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* A–Z quick-jump row. */
+.jumpbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem 0.25rem 0.75rem;
+}
+.jump {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.3rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.04);
+}
+.jump:hover {
+  background: rgba(29, 78, 216, 0.12);
+}
+
+.group {
+  padding-bottom: 0.4rem;
+}
+
+/* The "clear cut" for each letter: a bold letter label with an underline rule.
+   scroll-margin keeps it clear of the viewport top when jumped to. */
+.letter {
+  margin: 0.75rem 0 0.4rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.7);
+  scroll-margin-top: 1rem;
 }
 
 .list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.25rem 1rem;
-  padding: 0.5rem 1rem 1rem;
+  gap: 0.15rem 1rem;
+  padding: 0;
   margin: 0;
   list-style: none;
 }
-
 .list a {
   display: block;
   padding: 0.15rem 0;
@@ -41,16 +97,30 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .list a:hover {
   text-decoration: underline;
 }
 
 :global([data-theme="dark"]) .details {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-top-color: rgba(255, 255, 255, 0.14);
+}
+:global([data-theme="dark"]) .summary {
+  color: rgba(255, 255, 255, 0.6);
+}
+:global([data-theme="dark"]) .summary:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+:global([data-theme="dark"]) .jump {
+  color: #93c5fd;
   background: rgba(255, 255, 255, 0.06);
 }
-
+:global([data-theme="dark"]) .jump:hover {
+  background: rgba(147, 197, 253, 0.18);
+}
+:global([data-theme="dark"]) .letter {
+  color: rgba(255, 255, 255, 0.75);
+  border-bottom-color: rgba(255, 255, 255, 0.16);
+}
 :global([data-theme="dark"]) .list a {
   color: #93c5fd;
 }

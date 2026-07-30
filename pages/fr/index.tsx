@@ -18,7 +18,7 @@ import FlexboxList from "../../ui/templates/FlexboxList/FlexboxList";
 import Page from "../../ui/templates/Page/Page";
 import { hreflangAlternates } from "../../utils/hreflang";
 import BrowseIndex from "../../ui/components/BrowseIndex/BrowseIndex";
-import { pokemonBrowseItems } from "../../utils/browseIndex";
+import { pokemonBrowseItems, groupAlphabetically } from "../../utils/browseIndex";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -118,7 +118,7 @@ const HomePageFr = ({ pokemons }: IProps) => {
             <BrowseIndex
               heading={strings.browsePokemonHeading}
               ariaLabel={strings.browsePokemonAria}
-              items={pokemonBrowseItems(pokemons, "/fr/pokemon/", true)}
+              sections={groupAlphabetically(pokemonBrowseItems(pokemons, "/fr/pokemon/", true), "fr")}
             />
           </>
         </Page>

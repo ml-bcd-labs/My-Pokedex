@@ -18,11 +18,32 @@
     radial-gradient(120% 80% at 85% -10%, rgba(255, 255, 255, 0.22), transparent 55%),
     linear-gradient(160deg, var(--type), rgba(0, 0, 0, 0.62));
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Only transform is transitioned. box-shadow is NOT a compositor property, so
+     transitioning it repaints the whole card every frame — measured at ~95% of
+     the hover paint cost (76→4 Paint events once removed). The intensified hover
+     shadow is instead carried by .card::after and cross-faded via opacity, which
+     the compositor animates without repainting. */
+  transition: transform 0.3s ease;
+}
+/* Deeper hover/spotlight shadow as a fade-in overlay. Only its OPACITY animates
+   (compositor-only); the box-shadow itself is painted once. Transparent box, so
+   it never covers card content — only its outer shadow is visible. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 24px 46px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 24px 46px rgba(0, 0, 0, 0.55);
+}
+.card:hover::after {
+  opacity: 1;
 }
 .card:hover .heroImg {
   transform: scale(1.07) translateY(-4px);
@@ -245,12 +266,15 @@
 @media (hover: none) and (pointer: coarse) {
   .card.cardFocused {
     transform: translateY(-10px) scale(1.03);
-    /* Stronger than desktop hover so the centered card clearly stands out from
-       its neighbours: deeper drop shadow + a type-coloured glow.
-       The glow lives in box-shadow so the reduced-motion reset below clears it. */
+  }
+  /* Stronger than desktop hover so the centered card clearly stands out from its
+     neighbours: deeper drop shadow + a type-coloured glow. Carried on the ::after
+     overlay and faded via opacity (compositor-only), same as the hover shadow. */
+  .card.cardFocused::after {
     box-shadow:
       0 30px 54px rgba(0, 0, 0, 0.62),
       0 0 42px -2px var(--type);
+    opacity: 1;
   }
   .card.cardFocused .heroImg {
     transform: scale(1.16) translateY(-7px);
@@ -260,9 +284,11 @@
 @media (prefers-reduced-motion: reduce) {
   .card.cardFocused {
     transform: none;
-    /* Reset the shadow too — a shadow fade as the card crosses center is still
-       a "pop", which opt-out users shouldn't get. */
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
+  }
+  /* Clear the overlay too — a shadow/glow fade as the card crosses center is
+     still a "pop", which opt-out users shouldn't get. */
+  .card.cardFocused::after {
+    opacity: 0;
   }
   .card.cardFocused .heroImg {
     transform: none;

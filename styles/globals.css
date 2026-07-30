@@ -72,6 +72,15 @@ a {
   font-family: "PixelPokemonFont";
   src: local("PixelPokemonFont"), url(/fonts/pixelPokemonFont.ttf) format("truetype");
   font-display: swap;
+  /* The pixel font maps a large set of codepoints (all uppercase accented
+     letters — À É È Ê Ç Î Ô Û …, œ, guillemets « », the curly apostrophe ’, most
+     symbols) to BLANK glyphs. Because they're in the cmap, the browser wouldn't
+     otherwise fall back, so they rendered as gaps ("À propos" → " propos",
+     uppercased "POKÉDEX" → "POK DEX"). Restrict this face to the codepoints it
+     actually draws so everything else falls through to the next family in the
+     stack (the HD Pokémon font, which has full coverage). */
+  unicode-range: U+0020-007E, U+00A9, U+00DF-00E0, U+00E2, U+00E4, U+00E7-00EA,
+    U+00EE-00EF, U+00F4, U+00F6, U+00F9, U+00FB-00FC, U+2122;
 }
 
 @font-face {

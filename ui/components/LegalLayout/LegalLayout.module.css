@@ -5,6 +5,13 @@
   line-height: 1.6;
 }
 
+/* The pixel font renders large and wide, so these text-heavy trust pages felt
+   oversized in low-res. Scale the whole article down a notch; the headings use
+   em units, so they shrink proportionally with the body copy. HD is untouched. */
+:global([data-resolution="low res."]) .wrap {
+  font-size: 0.8rem;
+}
+
 .wrap h1 {
   margin-bottom: 0.5rem;
 }

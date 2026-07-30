@@ -15,7 +15,7 @@ const TermsPage = () => (
     <Page>
       <LegalLayout heading="Terms of Use" updated="July 13, 2026">
         <p>
-          By using {SITE_NAME} you agree to these terms. The site is provided
+          By using {SITE_NAME}{" "}you agree to these terms. The site is provided
           &quot;as is&quot;, for personal, non-commercial reference, with no warranty
           as to accuracy or availability.
         </p>

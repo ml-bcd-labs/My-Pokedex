@@ -12,7 +12,7 @@ import { toTypeSlug } from "../../../utils/typeSlug";
 import { hreflangAlternates } from "../../../utils/hreflang";
 import { useStrings } from "../../../hooks/useLocale";
 import BrowseIndex from "../../../ui/components/BrowseIndex/BrowseIndex";
-import { frTypeComboItems } from "../../../utils/browseIndex";
+import { frTypeComboItems, groupAlphabetically } from "../../../utils/browseIndex";
 
 const FrTypeInteractionsPage = () => {
   const strings = useStrings();
@@ -39,22 +39,22 @@ const FrTypeInteractionsPage = () => {
       />
       {/* Plan 6: hreflang/og:locale/breadcrumb */}
       <Page>
-        <>
-          <div className={styles.container}>
-            <TypeIntro selected={selected} />
-            <TypePicker selected={selected} />
-            <TypeMatchups selected={selected} />
-          </div>
-          {/* Index explorable de chaque page de correspondance de types (le sélecteur
-              ci-dessus est un filtre côté client) : sans lui les 171 pages de combos
-              n'ont aucun lien interne et sont orphelines. */}
-          <BrowseIndex
-            heading={strings.browseTypesHeading}
-            ariaLabel={strings.browseTypesAria}
-            items={frTypeComboItems()}
-          />
-        </>
+        <div className={styles.container}>
+          <TypeIntro selected={selected} />
+          <TypePicker selected={selected} />
+          <TypeMatchups selected={selected} />
+        </div>
       </Page>
+      {/* Index explorable de chaque page de correspondance de types (le sélecteur
+          est un filtre côté client) : sans lui les 171 pages de combos n'ont aucun
+          lien interne et sont orphelines. Hors de <Page> et épinglé au bas de
+          <main> pour rester juste au-dessus du pied de page, même sans sélection. */}
+      <BrowseIndex
+        pinBottom
+        heading={strings.browseTypesHeading}
+        ariaLabel={strings.browseTypesAria}
+        sections={groupAlphabetically(frTypeComboItems(), "fr")}
+      />
     </>
   );
 };

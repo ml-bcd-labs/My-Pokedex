@@ -10,6 +10,11 @@
 
 .container > main {
   flex: 1 0 auto;
+  /* Flex column too, so a page can pin trailing chrome (the A–Z browse index) to
+     the bottom of the content area via margin-top:auto — keeping it just above
+     the footer even when the page itself is short/empty. */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Reserve room for the fixed mobile bottom tab bar on the page container itself
@@ -27,7 +32,10 @@
 }
 
 .container[data-resolution="low res."] * {
-  font-family: PixelPokemonFont;
+  /* HD Pokémon font as fallback: it has full accent/symbol coverage, so glyphs
+     the pixel font leaves blank (uppercase accents, œ, « », ’) render on-brand
+     rather than disappearing. Relies on the pixel @font-face's unicode-range. */
+  font-family: PixelPokemonFont, HdPokemonFont, sans-serif;
 }
 
 .container[data-resolution="low res."] [id="id"] {

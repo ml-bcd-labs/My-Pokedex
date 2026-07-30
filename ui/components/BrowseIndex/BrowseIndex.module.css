@@ -87,6 +87,14 @@
   margin: 0;
   list-style: none;
 }
+/* The pixel font is much wider, so at minmax(140px) the type-combo labels
+   (e.g. "Electric / Fighting") overflow their track and get ellipsis-clipped.
+   Widen the tracks in low-res so at most ~4 columns fit (container caps at
+   1200px) and every label renders in full. min(100%, …) keeps a single column
+   from overflowing narrow viewports (WCAG 1.4.10 reflow). */
+:global([data-resolution="low res."]) .list {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
 .list a {
   display: block;
   padding: 0.15rem 0;

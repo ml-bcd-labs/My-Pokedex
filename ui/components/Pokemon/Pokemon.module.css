@@ -5,7 +5,14 @@
 .card {
   --type: #888;
   --font-scale: 1;
-  display: block;
+  /* flow-root (not plain block) so the card is a block-formatting context: the
+     glass panel's `margin-bottom` stays INSIDE the card as bottom padding.
+     In FlexboxList the card was the flex item (already a BFC) so this was
+     implicit; once VirtualGrid wraps it in a positioned cell it's a plain block
+     child, and without a BFC that bottom margin collapses out, dropping the
+     card's bottom padding. `padding-top` already isolates the sprite overhang,
+     so establishing the BFC does not affect the top. */
+  display: flow-root;
   text-decoration: none;
   position: relative;
   width: 17.5rem;

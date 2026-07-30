@@ -20,7 +20,10 @@ const useCenterSpotlight = (ref: RefObject<Element | null>): boolean => {
   const [touch, setTouch] = useState(false);
   useEffect(() => setTouch(isTouchDevice()), []);
 
-  const entry = useIntersectionObserver(ref, { rootMargin: CENTER_LINE_MARGIN });
+  // Only observe on touch devices. On desktop the return below is always false,
+  // so creating the observer would just re-render the card on every scroll for a
+  // discarded result — the dominant source of fast-scroll jank on the grid.
+  const entry = useIntersectionObserver(ref, { rootMargin: CENTER_LINE_MARGIN, enabled: touch });
 
   return touch && !!entry?.isIntersecting;
 };

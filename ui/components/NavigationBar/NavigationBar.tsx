@@ -122,10 +122,11 @@ const NavigationBar = () => {
           <Link href={homeHref} className={styles.logoLink} aria-label={strings.navHomeAria}>
             <img
               className={styles.logo}
-              src="/icons/logo.svg"
+              src="/icons/logo.webp"
               alt=""
               width={400}
               height={143}
+              fetchPriority="high"
             />
           </Link>
 

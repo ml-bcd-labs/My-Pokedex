@@ -109,9 +109,13 @@ const Header = ({
       <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       <link rel="manifest" href="/site.webmanifest" />
 
-      <link rel="preload" href="/fonts/pixelPokemonFont.ttf" as="font" crossOrigin="" />
-      <link rel="preload" href="/fonts/hdPokemonFont.woff" as="font" crossOrigin="" />
-      <link rel="preload" href="/fonts/hdPokemonFont-bold.woff" as="font" crossOrigin="" />
+      {/* The brand fonts load via their @font-face rules (globals.css) with
+          font-display: swap, so text paints immediately in the system fallback
+          and the branded face swaps in when it arrives. We deliberately do NOT
+          preload them: preloading fetches ~149 KB at the highest priority, which
+          on slow connections competes with the LCP image for bandwidth and pushes
+          LCP out — while swap already guarantees the fonts never block paint.
+          Content first; the branded typeface is deferred behind it. */}
 
       {jsonLdItems.map((item, index) => (
         <script

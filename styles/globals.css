@@ -71,7 +71,13 @@ a {
 @font-face {
   font-family: "PixelPokemonFont";
   src: local("PixelPokemonFont"), url(/fonts/pixelPokemonFont.ttf) format("truetype");
-  font-display: swap;
+  /* optional (not swap): the branded faces are non-preloaded, so on slow
+     connections they rarely arrive within the block period. `optional` lets the
+     browser keep the system fallback for that load instead of swapping the font
+     in late — which on the LCP text (the home intro) grows the glyphs and
+     registers a NEW, later LCP, and shifts layout. The branded face still shows
+     once cached (repeat visits). Protects LCP/CLS on the slow networks we target. */
+  font-display: optional;
   /* The pixel font maps a large set of codepoints (all uppercase accented
      letters — À É È Ê Ç Î Ô Û …, œ, guillemets « », the curly apostrophe ’, most
      symbols) to BLANK glyphs. Because they're in the cmap, the browser wouldn't
@@ -86,12 +92,12 @@ a {
 @font-face {
   font-family: "HdPokemonFont";
   src: local("HdPokemonFont"), url(/fonts/hdPokemonFont.woff) format("woff");
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
   font-family: "HdPokemonFont";
   src: local("HdPokemonFont-bold"), url(/fonts/hdPokemonFont-bold.woff) format("woff");
   font-weight: bold;
-  font-display: swap;
+  font-display: optional;
 }

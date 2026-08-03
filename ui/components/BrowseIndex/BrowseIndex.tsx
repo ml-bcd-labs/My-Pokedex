@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { BrowseSection } from "../../../utils/browseIndex";
 import styles from "./BrowseIndex.module.css";
 
@@ -49,7 +48,14 @@ const BrowseIndex = ({ heading, ariaLabel, sections, pinBottom = false }: IProps
               <ul className={styles.list}>
                 {section.items.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href}>{item.label}</Link>
+                    {/* Plain <a>, not next/link: this is a crawlable SEO index of
+                        ~1000+ links inside a collapsed <details>. next/link would
+                        mount ~1000 client components (each with a prefetch effect)
+                        at hydration — a large slice of the main-thread block that
+                        was delaying LCP on slow devices. Full-reload navigation is
+                        fine for an index users rarely click; crawlers read <a href>
+                        identically. */}
+                    <a href={item.href}>{item.label}</a>
                   </li>
                 ))}
               </ul>

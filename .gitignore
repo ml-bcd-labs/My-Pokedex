@@ -8,6 +8,10 @@ out/
 # would rather commit the images instead of fetching them on each build.
 public/pokemon/
 
+# Full Pokémon list emitted by getStaticProps (pages/index.tsx) and fetched
+# lazily by useDeferredPokemons. Regenerated on every build.
+public/data/
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*

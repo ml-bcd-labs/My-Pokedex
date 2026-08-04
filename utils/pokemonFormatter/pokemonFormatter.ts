@@ -1,81 +1,10 @@
 import { formatNumberToMatchLength } from "../stringManipulation";
-import typesInteractionData from "../../constants/TypeInteractions.json";
 import { EvolutionData, EvolvesTo, Specie, IPokemonResponseType } from "./types";
-import EffectivenessTypeToDamageFactorHashMapType from "../../constants/EffectivenessTypeToDamageFactorHashMap";
 import pokemonTypesColor from "../../constants/TypesColor.json";
-import {
-  extractStatsFromPokemon,
-  extractAbilitiesFromPokemon,
-  extractPokemonDescription,
-  extractPokemonCategory,
-  extractTypeName,
-} from "./extractors";
+import { extractStatsFromPokemon, extractTypeName } from "./extractors";
 import { BASIC_PIC, FULL_PIC, PIXELATED } from "../../constants/FetchPokemons";
 
 type PIC_TYPE = typeof BASIC_PIC | typeof FULL_PIC | typeof PIXELATED;
-
-const isVeryOrSuperEffectiveTypes = (value: PokemonInteractionTypeHash) => {
-  const firstValue = Object.values(value)[0] as PokemonEffectivenessType;
-
-  return firstValue === "very effective" || firstValue === "super effective";
-};
-
-const createWeaknessInteractionTypeObj = (value: PokemonInteractionTypeHash) => {
-  const type = Object.keys(value)[0] as PokemonType;
-  const interactionType = Object.values(value)[0] as PokemonEffectivenessType;
-  const factor = EffectivenessTypeToDamageFactorHashMapType[interactionType];
-
-  return { type, factor };
-};
-
-const getPokemonWeaknesses = (types: string) => {
-  const areTypesEqual = ({ key }: IPokemonInteractionTypes) => key === types;
-
-  const typeInteractions = typesInteractionData.flat().find(areTypesEqual);
-  const weakInteractionTypes = typeInteractions?.values
-    .filter(isVeryOrSuperEffectiveTypes)
-    .map(createWeaknessInteractionTypeObj);
-
-  return weakInteractionTypes || [];
-};
-
-// Defending effectiveness (damage taken) against all 18 attacking types.
-export const getPokemonDefensiveEffectiveness = (types: string): ITypeEffectiveness[] => {
-  const areTypesEqual = ({ key }: IPokemonInteractionTypes) => key === types;
-  const typeInteractions = typesInteractionData.flat().find(areTypesEqual);
-
-  if (!typeInteractions) {
-    return [];
-  }
-
-  return typeInteractions.values.map((value: PokemonInteractionTypeHash) => {
-    const type = Object.keys(value)[0];
-    const effectiveness = Object.values(value)[0] as PokemonEffectivenessType;
-
-    return { type, factor: EffectivenessTypeToDamageFactorHashMapType[effectiveness] };
-  });
-};
-
-// Offensive effectiveness (damage dealt) of this Pokemon's STAB types against all
-// 18 defending types — best multiplier across its types (best STAB coverage).
-export const getPokemonOffensiveEffectiveness = (types: string): ITypeEffectiveness[] => {
-  const attackers = types.split(",");
-  const allEntries = typesInteractionData.flat();
-  const ownDefence = allEntries.find(({ key }) => key === types);
-  const defenderTypes = ownDefence ? ownDefence.values.map((value) => Object.keys(value)[0]) : [];
-
-  return defenderTypes.map((defender) => {
-    const defenderEntry = allEntries.find(({ key }) => key === defender);
-    const factors = attackers.map((attacker) => {
-      const hash = defenderEntry?.values.find((value) => Object.keys(value)[0] === attacker);
-      const effectiveness = (hash ? Object.values(hash)[0] : "normal effectiveness") as PokemonEffectivenessType;
-
-      return EffectivenessTypeToDamageFactorHashMapType[effectiveness];
-    });
-
-    return { type: defender, factor: Math.max(...factors) as DamageFactor };
-  });
-};
 
 export const getPokemonPrimaryTypeColor = (types: string) => {
   const primaryType = types.split(",")[0];
@@ -153,40 +82,4 @@ export const formatEvolvesFrom = (species: Specie): IEvolvesFrom | null => {
 
   // Only name + id ship; the badge's sprite URLs are derived from id in the card.
   return { name: evolvesFrom.name, id };
-};
-
-export const formatToFullPokemon = (
-  pokemon: IPokemonResponseType,
-  evolutionChain: IEvolutionStage[],
-  pokemonSpeciesData: Specie
-): IFullPokemon => {
-  const { height, weight, id } = pokemon;
-  const pokemonBasicInfo = formatToBasicPokemon(pokemon);
-  const weaknesses = getPokemonWeaknesses(pokemonBasicInfo.types);
-  const defensiveEffectiveness = getPokemonDefensiveEffectiveness(pokemonBasicInfo.types);
-  const offensiveEffectiveness = getPokemonOffensiveEffectiveness(pokemonBasicInfo.types);
-  const stats = extractStatsFromPokemon(pokemon);
-  const description = extractPokemonDescription(pokemonSpeciesData);
-  const category = extractPokemonCategory(pokemonSpeciesData);
-  const abilities = extractAbilitiesFromPokemon(pokemon.abilities);
-  // formatToBasicPokemon no longer emits URLs (list-payload diet), so the detail
-  // page sets both explicitly: pixel for the low-res toggle, FULL_PIC for the hero.
-  const pixelImageUrl = createImageUrl(id);
-  const hdImageUrl = createImageUrl(id, FULL_PIC);
-
-  return {
-    ...pokemonBasicInfo,
-    pixelImageUrl,
-    hdImageUrl,
-    stats,
-    weaknesses,
-    defensiveEffectiveness,
-    offensiveEffectiveness,
-    height: height * 10,
-    weight: weight / 10,
-    evolutionChain,
-    abilities,
-    description,
-    category,
-  };
 };

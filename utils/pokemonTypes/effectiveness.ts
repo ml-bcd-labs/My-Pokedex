@@ -1,23 +1,8 @@
-import typeInteractionsData from "../../constants/TypeInteractions.json";
-import EffectivenessTypeToDamageFactorHashMap from "../../constants/EffectivenessTypeToDamageFactorHashMap";
+import { TYPE_FACTOR as FACTOR } from "../../constants/typeChart";
 
-type InteractionEntry = { key: string; values: Array<Record<string, string>> };
-
-// FACTOR[defendingType][attackingType] = incoming damage multiplier.
-// Built once from the 18 single-type rows; every dual-type matchup is just the
-// product of its two single-type factors, so we never need the combo rows.
-const FACTOR: Record<string, Record<string, number>> = {};
-
-(typeInteractionsData as unknown as InteractionEntry[][]).flat().forEach((entry) => {
-  if (entry.key.includes(",")) return; // single-type rows only
-
-  const row: Record<string, number> = {};
-  entry.values.forEach((pair) => {
-    const [attacker, effectiveness] = Object.entries(pair)[0];
-    row[attacker] = EffectivenessTypeToDamageFactorHashMap[effectiveness as PokemonEffectivenessType];
-  });
-  FACTOR[entry.key] = row;
-});
+// FACTOR[defendingType][attackingType] = incoming damage multiplier, for the 18
+// single-type rows only. Every dual-type matchup is the product of its two
+// single-type factors, so combo rows are never stored — they're computed here.
 
 // Multiplier a single attacking type deals to a (possibly dual) defender.
 export const incomingFactor = (defenders: string[], attacker: string): number =>

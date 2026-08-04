@@ -1,9 +1,9 @@
 import {
   formatToBasicPokemon,
-  formatToFullPokemon,
   formatPokemonEvolutionChain,
   formatEvolvesFrom,
 } from "../../utils/pokemonFormatter/pokemonFormatter";
+import { formatToFullPokemon } from "../../utils/pokemonFormatter/pokemonDetailFormatter";
 import {
   extractPokemonName,
   extractPokemonData,

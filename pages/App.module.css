@@ -35,7 +35,7 @@
   /* HD Pokémon font as fallback: it has full accent/symbol coverage, so glyphs
      the pixel font leaves blank (uppercase accents, œ, « », ’) render on-brand
      rather than disappearing. Relies on the pixel @font-face's unicode-range. */
-  font-family: PixelPokemonFont, HdPokemonFont, sans-serif;
+  font-family: PixelPokemonFont, "PixelPokemonFont Fallback", HdPokemonFont, "HdPokemonFont Fallback", sans-serif;
 }
 
 .container[data-resolution="low res."] [id="id"] {
@@ -66,7 +66,7 @@
 }
 
 .container[data-resolution="high res."] * {
-  font-family: HdPokemonFont, arial, sans-serif;
+  font-family: HdPokemonFont, "HdPokemonFont Fallback", arial, sans-serif;
 }
 
 .container[data-resolution="high res."] h4 {

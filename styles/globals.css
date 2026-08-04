@@ -95,3 +95,35 @@ a {
   font-weight: bold;
   font-display: swap;
 }
+
+/* Metric-matched fallback faces (Arial reshaped to occupy the SAME line box as
+   each Pokémon font). Kept with `font-display: swap` above, these let the real
+   font swap in with ~zero layout shift: before it loads the box is already sized
+   like the Pokémon font, so the swap is a repaint, not a reflow. size-adjust /
+   *-override values are computed from the actual font files (capsize); do not
+   hand-edit — regenerate if the font files change. The pixel fallback carries the
+   SAME unicode-range as its font so accented codepoints fall through to the
+   HD-matched fallback, mirroring how the real fonts render. */
+@font-face {
+  font-family: "PixelPokemonFont Fallback";
+  /* Arial (iOS/Windows/macOS) + Roboto (Android) so the metric match applies on
+     every platform — Chrome-on-Android is the dominant field-CLS surface and has
+     no Arial. Their metrics differ <0.5%, so one set of Arial-tuned overrides
+     covers both. */
+  src: local("Arial"), local("ArialMT"), local("Roboto"), local("Roboto-Regular");
+  ascent-override: 39.0076%;
+  descent-override: 5.5725%;
+  line-gap-override: 4.0052%;
+  size-adjust: 224.3154%;
+  unicode-range: U+0020-007E, U+00A9, U+00DF-00E0, U+00E2, U+00E4, U+00E7-00EA,
+    U+00EE-00EF, U+00F4, U+00F6, U+00F9, U+00FB-00FC, U+2122;
+}
+
+@font-face {
+  font-family: "HdPokemonFont Fallback";
+  src: local("Arial"), local("ArialMT"), local("Roboto"), local("Roboto-Regular");
+  ascent-override: 75.8643%;
+  descent-override: 20.6824%;
+  line-gap-override: 20.3058%;
+  size-adjust: 103.5768%;
+}

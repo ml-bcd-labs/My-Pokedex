@@ -358,7 +358,7 @@
 :global([data-resolution]) div.sheetOverlay *,
 :global([data-resolution]) nav.bottomTabs,
 :global([data-resolution]) nav.bottomTabs * {
-  font-family: "HdPokemonFont", arial, sans-serif;
+  font-family: "HdPokemonFont", "HdPokemonFont Fallback", arial, sans-serif;
 }
 
 @media screen and (max-width: 900px) {

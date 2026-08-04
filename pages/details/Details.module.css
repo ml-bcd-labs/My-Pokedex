@@ -34,11 +34,11 @@
    unicode-range, which frees these codepoints to fall through to the fallback. */
 :global([data-resolution="low res."]) .wrap,
 :global([data-resolution="low res."]) .wrap * {
-  font-family: "PixelPokemonFont", "HdPokemonFont", sans-serif !important;
+  font-family: "PixelPokemonFont", "PixelPokemonFont Fallback", "HdPokemonFont", "HdPokemonFont Fallback", sans-serif !important;
 }
 :global([data-resolution="high res."]) .wrap,
 :global([data-resolution="high res."]) .wrap * {
-  font-family: "HdPokemonFont", arial, sans-serif !important;
+  font-family: "HdPokemonFont", "HdPokemonFont Fallback", arial, sans-serif !important;
 }
 .inner {
   max-width: 1000px;

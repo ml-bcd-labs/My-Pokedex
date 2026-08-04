@@ -76,7 +76,7 @@ const PokemonFr = ({
       href={`${FR_POKEMON}${slug}`}
       prefetch
       className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
-      style={{ "--type": cardColor } as CSSProperties}
+      style={{ "--type": cardColor, "--type-vivid": getTypeColor(typeList[0]) } as CSSProperties}
     >
       <span className={styles.watermark} aria-hidden="true">
         #{formatNumberToMatchLength(id)}
@@ -125,9 +125,11 @@ const PokemonFr = ({
             </span>
           ))}
         </div>
-        {renderStat(FR_STAT_LABELS["Attack"], attack)}
-        {renderStat(FR_STAT_LABELS["Defense"], defense)}
-        {renderStat(FR_STAT_LABELS["Speed"], speed)}
+        {/* Abbreviated on the card (Attaque/Défense/Vitesse -> Att/Déf/Vit); the
+            detail page keeps the full FR_STAT_LABELS names. */}
+        {renderStat("Att", attack)}
+        {renderStat("Déf", defense)}
+        {renderStat("Vit", speed)}
       </div>
     </Link>
   );

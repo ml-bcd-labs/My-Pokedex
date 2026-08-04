@@ -71,7 +71,7 @@ const Pokemon = ({
       href={`${POKEMON}${slug}`}
       prefetch
       className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
-      style={{ "--type": cardColor } as CSSProperties}
+      style={{ "--type": cardColor, "--type-vivid": getTypeColor(typeList[0]) } as CSSProperties}
     >
       <span className={styles.watermark} aria-hidden="true">
         #{formatNumberToMatchLength(id)}
@@ -120,9 +120,9 @@ const Pokemon = ({
             </span>
           ))}
         </div>
-        {renderStat("Attack", attack)}
-        {renderStat("Defense", defense)}
-        {renderStat("Speed", speed)}
+        {renderStat("Atk", attack)}
+        {renderStat("Def", defense)}
+        {renderStat("Spd", speed)}
       </div>
     </Link>
   );

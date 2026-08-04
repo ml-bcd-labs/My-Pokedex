@@ -18,4 +18,11 @@ describe("Pokemon card", () => {
     const a = container.querySelector('a[href="/pokemon/bulbasaur"]');
     expect(a).not.toBeNull();
   });
+
+  it("hero image declares intrinsic width/height to reserve layout box", () => {
+    const { container } = render(<Pokemon {...fixture} />);
+    const img = container.querySelector('img[alt$="artwork"]') as HTMLImageElement;
+    expect(img.getAttribute("width")).toBeTruthy();
+    expect(img.getAttribute("height")).toBeTruthy();
+  });
 });

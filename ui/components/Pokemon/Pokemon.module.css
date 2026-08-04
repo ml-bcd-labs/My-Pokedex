@@ -247,7 +247,11 @@
   margin-top: 0;
 }
 .statLabel {
-  width: 62px;
+  /* Sized to the label text, not a fixed px: the labels are now 3-letter
+     abbreviations (Atk/Def/Spd), so 3.4em comfortably clears them at both the
+     low-res (10px) and HD (12px) .stat sizes while handing the freed width to
+     the flex:1 .track bar below. */
+  width: 3.4em;
   flex-shrink: 0;
   opacity: 0.9;
 }

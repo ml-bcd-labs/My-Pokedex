@@ -1,5 +1,6 @@
 import React, { useContext, memo, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { renderToStaticMarkup } from "react-dom/server";
 import styles from "./Home.module.css";
 import LoadingContext from "../context/LoadingContext";
 import PokemonContext from "../context/PokemonContext";
@@ -17,18 +18,22 @@ import VirtualGrid from "../ui/templates/VirtualGrid/VirtualGrid";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
 import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
 import { hreflangAlternates } from "../utils/hreflang";
-import { useStrings } from "../hooks/useLocale";
-import BrowseIndex from "../ui/components/BrowseIndex/BrowseIndex";
+import BrowseIndexStatic from "../ui/components/BrowseIndex/BrowseIndexStatic";
+import { BrowseIndexContent } from "../ui/components/BrowseIndex/BrowseIndex";
+import browseStyles from "../ui/components/BrowseIndex/BrowseIndex.module.css";
 import { pokemonBrowseItems, groupAlphabetically } from "../utils/browseIndex";
+import { UI_STRINGS } from "../locales/uiStrings";
 
 interface IProps {
   pokemons: IBasicPokemon[];
+  browseIndexHtml: string;
+  browseAria: string;
+  browseClassName: string;
 }
 
 const ABOVE_THE_FOLD = 6;
 
-const HomePage = ({ pokemons }: IProps) => {
-  const strings = useStrings();
+const HomePage = ({ pokemons, browseIndexHtml, browseAria, browseClassName }: IProps) => {
   const filteredPokemons = useFiltering();
   const { resolution } = useContext(ResolutionContext);
   const { setPokemons, setFilteredPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
@@ -111,11 +116,7 @@ const HomePage = ({ pokemons }: IProps) => {
                 detail pages to one click from the homepage (the interactive grid
                 above only ships its initial flow-rendered batch of links in the
                 static HTML before windowing kicks in). */}
-            <BrowseIndex
-              heading={strings.browsePokemonHeading}
-              ariaLabel={strings.browsePokemonAria}
-              sections={groupAlphabetically(pokemonBrowseItems(pokemons, "/pokemon/"), "en")}
-            />
+            <BrowseIndexStatic html={browseIndexHtml} ariaLabel={browseAria} className={browseClassName} />
           </>
         </Page>
       </ErrorScreenWrapper>
@@ -128,6 +129,24 @@ export default memo(HomePage);
 export async function getStaticProps() {
   const pokemons = await fetchAllPokemons();
 
-  return { props: { pokemons } };
+  // The home page's BrowseIndex is de-hydrated into a dangerouslySetInnerHTML
+  // island (see BrowseIndexStatic), so its markup is built once here instead
+  // of via the client-only useStrings()/useLocale() hooks. The home page is
+  // English-only (French lives at /fr, which still renders <BrowseIndex/>
+  // normally), so the EN strings are read directly from UI_STRINGS.
+  const en = UI_STRINGS.en;
+  const sections = groupAlphabetically(pokemonBrowseItems(pokemons, "/pokemon/"), "en");
+  const browseIndexHtml = renderToStaticMarkup(
+    <BrowseIndexContent heading={en.browsePokemonHeading} sections={sections} />,
+  );
+
+  return {
+    props: {
+      pokemons,
+      browseIndexHtml,
+      browseAria: en.browsePokemonAria,
+      browseClassName: browseStyles.browse,
+    },
+  };
 }
 

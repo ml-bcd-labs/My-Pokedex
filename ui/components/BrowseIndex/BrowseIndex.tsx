@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { BrowseSection } from "../../../utils/browseIndex";
 import styles from "./BrowseIndex.module.css";
 
@@ -11,6 +10,59 @@ interface IProps {
   pinBottom?: boolean;
 }
 
+// "#" isn't valid in an id fragment; map it to a stable slug.
+export const anchorId = (key: string) => `browse-${key === "#" ? "num" : key}`;
+
+interface IContentProps {
+  heading: string;
+  sections: BrowseSection[];
+}
+
+// The <details> subtree only (no <nav>), extracted so it can also be rendered
+// at build time via renderToStaticMarkup for the de-hydrated home page island
+// (see BrowseIndexStatic). Keep this in sync with BrowseIndex's own render —
+// BrowseIndex wraps this in the exact same <nav> it always has.
+export const BrowseIndexContent = ({ heading, sections }: IContentProps) => (
+  <details className={styles.details}>
+    <summary className={styles.summary}>{heading}</summary>
+    {/* Quick-jump row: one anchor per present letter. It lives inside the
+        <details>, so the panel is already open by the time a letter is
+        clicked and the in-page scroll resolves. */}
+    <div className={styles.jumpbar}>
+      {sections.map((section) => (
+        <a key={section.key} className={styles.jump} href={`#${anchorId(section.key)}`}>
+          {section.letter}
+        </a>
+      ))}
+    </div>
+    <div className={styles.groups}>
+      {sections.map((section) => (
+        <div key={section.key} className={styles.group}>
+          {/* Plain divider (not a heading) to keep the document outline and
+              landmark tree clean — a bare letter isn't a document section. */}
+          <div id={anchorId(section.key)} className={styles.letter}>
+            {section.letter}
+          </div>
+          <ul className={styles.list}>
+            {section.items.map((item) => (
+              <li key={item.href}>
+                {/* Plain <a>, not next/link: this is a crawlable SEO index of
+                    ~1000+ links inside a collapsed <details>. next/link would
+                    mount ~1000 client components (each with a prefetch effect)
+                    at hydration — a large slice of the main-thread block that
+                    was delaying LCP on slow devices. Full-reload navigation is
+                    fine for an index users rarely click; crawlers read <a href>
+                    identically. */}
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </details>
+);
+
 // A server-rendered, crawlable A–Z index of internal links, rendered inside a
 // native <details> so it's collapsed for humans but fully present in the static
 // HTML — crawlers read <details> content regardless of open state. The links are
@@ -21,42 +73,9 @@ interface IProps {
 const BrowseIndex = ({ heading, ariaLabel, sections, pinBottom = false }: IProps) => {
   if (!sections.length) return null;
 
-  // "#" isn't valid in an id fragment; map it to a stable slug.
-  const anchorId = (key: string) => `browse-${key === "#" ? "num" : key}`;
-
   return (
     <nav className={pinBottom ? `${styles.browse} ${styles.pinBottom}` : styles.browse} aria-label={ariaLabel}>
-      <details className={styles.details}>
-        <summary className={styles.summary}>{heading}</summary>
-        {/* Quick-jump row: one anchor per present letter. It lives inside the
-            <details>, so the panel is already open by the time a letter is
-            clicked and the in-page scroll resolves. */}
-        <div className={styles.jumpbar}>
-          {sections.map((section) => (
-            <a key={section.key} className={styles.jump} href={`#${anchorId(section.key)}`}>
-              {section.letter}
-            </a>
-          ))}
-        </div>
-        <div className={styles.groups}>
-          {sections.map((section) => (
-            <div key={section.key} className={styles.group}>
-              {/* Plain divider (not a heading) to keep the document outline and
-                  landmark tree clean — a bare letter isn't a document section. */}
-              <div id={anchorId(section.key)} className={styles.letter}>
-                {section.letter}
-              </div>
-              <ul className={styles.list}>
-                {section.items.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href}>{item.label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </details>
+      <BrowseIndexContent heading={heading} sections={sections} />
     </nav>
   );
 };

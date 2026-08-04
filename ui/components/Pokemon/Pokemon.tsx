@@ -69,7 +69,7 @@ const Pokemon = ({
     <Link
       ref={cardRef}
       href={`${POKEMON}${slug}`}
-      prefetch
+      prefetch={false}
       className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
       style={{ "--type": cardColor, "--type-vivid": getTypeColor(typeList[0]) } as CSSProperties}
     >
@@ -80,7 +80,14 @@ const Pokemon = ({
       {evolvesFrom && (
         <span className={styles.evoBadge} title={`Evolves from ${evolvesFrom.name}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={evoImageUrl} alt={`${evolvesFrom.name} artwork`} data-sprite="" loading="lazy" />
+          <img
+            src={evoImageUrl}
+            alt={`${evolvesFrom.name} artwork`}
+            data-sprite=""
+            loading="lazy"
+            width={96}
+            height={96}
+          />
         </span>
       )}
 
@@ -92,6 +99,8 @@ const Pokemon = ({
           src={imageUrl}
           alt={`${name} artwork`}
           data-sprite=""
+          width={96}
+          height={96}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           onLoad={() => setHeroLoaded(true)}

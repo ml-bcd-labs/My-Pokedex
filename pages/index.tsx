@@ -1,11 +1,15 @@
+import fs from "fs";
+import path from "path";
 import React, { useContext, memo, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { renderToStaticMarkup } from "react-dom/server";
 import styles from "./Home.module.css";
 import LoadingContext from "../context/LoadingContext";
 import PokemonContext from "../context/PokemonContext";
 import ResolutionContext from "../context/ResolutionContext";
 import { LOW_RESOLUTION } from "../constants/Resolution";
 import useFiltering from "../hooks/useFiltering";
+import useDeferredPokemons from "../hooks/useDeferredPokemons";
 import { fetchAllPokemons } from "../services/fetchPokemons/fetchPokemons";
 import { cardImageUrls } from "../utils/pokemonFormatter/pokemonFormatter";
 import EmptyListPlaceholder from "../ui/components/EmptyListPlaceholder/EmptyListPlaceholder";
@@ -17,42 +21,61 @@ import VirtualGrid from "../ui/templates/VirtualGrid/VirtualGrid";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
 import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
 import { hreflangAlternates } from "../utils/hreflang";
-import { useStrings } from "../hooks/useLocale";
-import BrowseIndex from "../ui/components/BrowseIndex/BrowseIndex";
+import BrowseIndexStatic from "../ui/components/BrowseIndex/BrowseIndexStatic";
+import { BrowseIndexContent } from "../ui/components/BrowseIndex/BrowseIndex";
+import browseStyles from "../ui/components/BrowseIndex/BrowseIndex.module.css";
 import { pokemonBrowseItems, groupAlphabetically } from "../utils/browseIndex";
+import { UI_STRINGS } from "../locales/uiStrings";
 
 interface IProps {
   pokemons: IBasicPokemon[];
+  browseIndexHtml: string;
+  browseAria: string;
+  browseClassName: string;
 }
 
 const ABOVE_THE_FOLD = 6;
 
-const HomePage = ({ pokemons }: IProps) => {
-  const strings = useStrings();
+// How many list items are inlined into __NEXT_DATA__. Must be ≥ VirtualGrid's
+// initialCount (48) so the flow render has ≥2 rows to measure from, and the
+// initial viewport is fully populated before the deferred full list arrives.
+const INLINE_COUNT = 48;
+
+const HomePage = ({ pokemons, browseIndexHtml, browseAria, browseClassName }: IProps) => {
   const filteredPokemons = useFiltering();
   const { resolution } = useContext(ResolutionContext);
   const { setPokemons, setFilteredPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
   const { setLoading, loading } = useContext(LoadingContext);
 
+  // `pokemons` is only the inlined slice (first INLINE_COUNT items in
+  // __NEXT_DATA__). useDeferredPokemons returns that slice on SSR/first render —
+  // no hydration mismatch — then swaps in the full ~1025-item list fetched from
+  // the static /data/pokemons.json after hydration (idle + first-scroll). The
+  // grid shows the inlined cards immediately and VirtualGrid's windowing extends
+  // automatically once the list grows (its totalRows recomputes from items.length).
+  const allPokemons = useDeferredPokemons(pokemons);
+
   // The context is seeded client-side (useEffect below), so on the server and the
-  // first client render it's empty. Fall back to the SSG `pokemons` prop so the
-  // first cards — including the LCP hero image — are in the server HTML and paint
-  // without waiting for hydration. Once seeded, defer to the filtered list.
-  const listSource = ctxPokemons.length ? filteredPokemons : pokemons;
+  // first client render it's empty. Fall back to the deferred list (initially the
+  // inlined slice) so the first cards — including the LCP hero image — are in the
+  // server HTML and paint without waiting for hydration. Once seeded, defer to the
+  // filtered list.
+  const listSource = ctxPokemons.length ? filteredPokemons : allPokemons;
 
   const updatePokemons = () => {
-    if (pokemons) {
-      // Seed BOTH lists from this locale's SSG list: the source (so search/sort
-      // filter against the right locale) and the display (so the grid never
+    if (allPokemons) {
+      // Seed BOTH lists from the deferred list: the source (so search/sort filter
+      // against the full list once it arrives) and the display (so the grid never
       // blanks in the render between the two being set). useFiltering then owns
-      // the display and re-applies any active query once the source is in.
-      setPokemons(pokemons);
-      setFilteredPokemons(pokemons);
+      // the display and re-applies any active query once the source is in. This
+      // re-runs when the list grows 48→1025, extending the grid.
+      setPokemons(allPokemons);
+      setFilteredPokemons(allPokemons);
       setLoading(false);
     }
   };
 
-  useEffect(updatePokemons, [pokemons, setLoading, setPokemons, setFilteredPokemons]);
+  useEffect(updatePokemons, [allPokemons, setLoading, setPokemons, setFilteredPokemons]);
 
   useEffect(() => {
     filteredPokemons.slice(0, ABOVE_THE_FOLD).forEach((pokemon) => {
@@ -111,11 +134,7 @@ const HomePage = ({ pokemons }: IProps) => {
                 detail pages to one click from the homepage (the interactive grid
                 above only ships its initial flow-rendered batch of links in the
                 static HTML before windowing kicks in). */}
-            <BrowseIndex
-              heading={strings.browsePokemonHeading}
-              ariaLabel={strings.browsePokemonAria}
-              sections={groupAlphabetically(pokemonBrowseItems(pokemons, "/pokemon/"), "en")}
-            />
+            <BrowseIndexStatic html={browseIndexHtml} ariaLabel={browseAria} className={browseClassName} />
           </>
         </Page>
       </ErrorScreenWrapper>
@@ -128,6 +147,33 @@ export default memo(HomePage);
 export async function getStaticProps() {
   const pokemons = await fetchAllPokemons();
 
-  return { props: { pokemons } };
+  // The home page's BrowseIndex is de-hydrated into a dangerouslySetInnerHTML
+  // island (see BrowseIndexStatic), so its markup is built once here instead
+  // of via the client-only useStrings()/useLocale() hooks. The home page is
+  // English-only (French lives at /fr, which still renders <BrowseIndex/>
+  // normally), so the EN strings are read directly from UI_STRINGS.
+  const en = UI_STRINGS.en;
+  const sections = groupAlphabetically(pokemonBrowseItems(pokemons, "/pokemon/"), "en");
+  const browseIndexHtml = renderToStaticMarkup(
+    <BrowseIndexContent heading={en.browsePokemonHeading} sections={sections} />,
+  );
+
+  // Emit the FULL list to a static JSON file served from /data/pokemons.json.
+  // useDeferredPokemons fetches it after hydration so the ~1025-item list stays
+  // out of __NEXT_DATA__ (which now carries only the first INLINE_COUNT items).
+  // With output: "export", Next copies public/ into out/ after page generation,
+  // so this lands at out/data/pokemons.json.
+  const dir = path.join(process.cwd(), "public", "data");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "pokemons.json"), JSON.stringify(pokemons));
+
+  return {
+    props: {
+      pokemons: pokemons.slice(0, INLINE_COUNT),
+      browseIndexHtml,
+      browseAria: en.browsePokemonAria,
+      browseClassName: browseStyles.browse,
+    },
+  };
 }
 

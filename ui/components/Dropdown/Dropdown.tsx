@@ -8,6 +8,9 @@ interface IProps {
   // while the visible text can be localized. Defaults to the value itself, so
   // callers that omit it render exactly as before.
   renderLabel?: (option: string) => string;
+  // Optional grouping: when provided, options render under <optgroup> headings
+  // (the union of a group's options should match `options`). Omit for a flat list.
+  groups?: { label: string; options: string[] }[];
 }
 
 function Dropdown<U>({
@@ -15,6 +18,7 @@ function Dropdown<U>({
   options,
   label,
   renderLabel,
+  groups,
   handleOptionSelectionChange,
 }: IProps & { handleOptionSelectionChange: (option: U) => void; selectedOption: U }) {
   const renderOption = (option: string) => (
@@ -23,7 +27,14 @@ function Dropdown<U>({
     </option>
   );
 
-  const renderOptions = () => options.map(renderOption);
+  const renderOptions = () =>
+    groups
+      ? groups.map((group) => (
+          <optgroup key={group.label} label={group.label}>
+            {group.options.map(renderOption)}
+          </optgroup>
+        ))
+      : options.map(renderOption);
 
   const handleOnChange = (e: BaseSyntheticEvent) => handleOptionSelectionChange(e.target.value as U);
 

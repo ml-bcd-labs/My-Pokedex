@@ -15,10 +15,21 @@ export type UiStrings = {
   homeTitleH1: string;
   homeIntro: string;
   sortLabel: string;
+  sortGroupNumber: string;
+  sortGroupName: string;
+  sortGroupStat: string;
   sortAscNumber: string;
   sortDescNumber: string;
   sortAscName: string;
   sortDescName: string;
+  sortSpeedDesc: string;
+  sortSpeedAsc: string;
+  sortAttackDesc: string;
+  sortAttackAsc: string;
+  sortDefenseDesc: string;
+  sortDefenseAsc: string;
+  sortHpDesc: string;
+  sortHpAsc: string;
   footerAbout: string;
   footerPrivacy: string;
   footerContact: string;
@@ -73,10 +84,21 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     homeIntro:
       "Search every Pokémon by name or National Pokédex number, filter the list by type, and open any entry for its base stats, type weaknesses and resistances, abilities and full evolution line.",
     sortLabel: "Sort Pokémon list",
+    sortGroupNumber: "Number",
+    sortGroupName: "Name",
+    sortGroupStat: "Base stat",
     sortAscNumber: "asc. number",
     sortDescNumber: "desc. number",
     sortAscName: "A-Z",
     sortDescName: "Z-A",
+    sortSpeedDesc: "Speed ↓",
+    sortSpeedAsc: "Speed ↑",
+    sortAttackDesc: "Attack ↓",
+    sortAttackAsc: "Attack ↑",
+    sortDefenseDesc: "Defense ↓",
+    sortDefenseAsc: "Defense ↑",
+    sortHpDesc: "HP ↓",
+    sortHpAsc: "HP ↑",
     footerAbout: "About",
     footerPrivacy: "Privacy",
     footerContact: "Contact",
@@ -130,10 +152,21 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     homeIntro:
       "Recherchez chaque Pokémon par nom ou numéro du Pokédex National, filtrez la liste par type, et ouvrez une fiche pour ses statistiques de base, faiblesses et résistances de type, talents et chaîne d'évolution complète.",
     sortLabel: "Trier la liste des Pokémon",
+    sortGroupNumber: "Numéro",
+    sortGroupName: "Nom",
+    sortGroupStat: "Statistique",
     sortAscNumber: "n° croissant",
     sortDescNumber: "n° décroissant",
     sortAscName: "A-Z",
     sortDescName: "Z-A",
+    sortSpeedDesc: "Vitesse ↓",
+    sortSpeedAsc: "Vitesse ↑",
+    sortAttackDesc: "Attaque ↓",
+    sortAttackAsc: "Attaque ↑",
+    sortDefenseDesc: "Défense ↓",
+    sortDefenseAsc: "Défense ↑",
+    sortHpDesc: "PV ↓",
+    sortHpAsc: "PV ↑",
     footerAbout: "À propos",
     footerPrivacy: "Confidentialité",
     footerContact: "Contact",

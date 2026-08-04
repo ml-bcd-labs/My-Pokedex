@@ -69,7 +69,7 @@ const Pokemon = ({
     <Link
       ref={cardRef}
       href={`${POKEMON}${slug}`}
-      prefetch
+      prefetch={false}
       className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
       style={{ "--type": cardColor } as CSSProperties}
     >

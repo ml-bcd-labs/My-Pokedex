@@ -8,7 +8,7 @@
     "build-candidate": "POKEDEX_SNAPSHOT=record tsx scripts/buildCandidate.mjs",
     "fetch:candidate": "npm run build-candidate && node scripts/downloadPokemonImages.mjs \"$(jq -r .recordCount data/candidate/manifest.json)\"",
     "validate": "POKEDEX_SNAPSHOT=replay tsx scripts/validateCandidate.mjs",
-    "build:snapshot": "POKEDEX_SNAPSHOT=replay tsx scripts/generateSitemap.mjs && POKEDEX_SNAPSHOT=replay next build",
+    "build:snapshot": "POKEDEX_SNAPSHOT=replay tsx scripts/generateSitemap.mjs && POKEDEX_SNAPSHOT=replay npm run check-fr-coverage && POKEDEX_SNAPSHOT=replay next build && node scripts/inject-sw-version.mjs",
     "predev": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs",
     "dev": "next dev --turbopack",
     "prebuild": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs && npm run check-fr-coverage",
@@ -18,7 +18,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "postbuild": "node scripts/inject-sw-version.mjs"
   },
   "dependencies": {
     "next": "16.2.11",

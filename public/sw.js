@@ -11,10 +11,12 @@
  * for requests whose origin !== ours, so GTM / GA are NEVER touched by the SW
  * and keep their normal network + online-detection behaviour.
  *
- * Bump VERSION to invalidate every cache on the next activate.
+ * VERSION is stamped at build time by scripts/inject-sw-version.mjs (git short
+ * hash), so every deploy invalidates the previous caches on activate. Do not
+ * hand-edit it: a constant VERSION means caches are never purged.
  */
 
-const VERSION = "v1";
+const VERSION = "__CACHE_VERSION__";
 const SHELL_CACHE = `shell-${VERSION}`;
 const STATIC_CACHE = `static-${VERSION}`;
 const IMG_CACHE = `img-${VERSION}`;

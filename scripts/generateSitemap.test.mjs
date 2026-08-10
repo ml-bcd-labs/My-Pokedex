@@ -116,3 +116,39 @@ test("buildRedirects maps each legacy /details/{id} to /pokemon/{slug} with a 30
   // One line per mapped id, nothing more.
   assert.equal(redirects.trim().split("\n").length, 3);
 });
+
+test("entityLastmod dates a Pokémon URL from its own content hash", () => {
+  const xml = buildSitemap({
+    idToEnSlug: { 1: "bulbasaur", 2: "ivysaur" },
+    idToFrSlug: { 1: "bulbizarre", 2: "herbizarre" },
+    frTypeSlugs: [],
+    entityLastmod: { 1: "2026-03-14" },
+  });
+  const block = (loc) => xml.split("<url>").find((b) => b.includes(`<loc>${loc}</loc>`));
+
+  assert.match(block("https://my-pokedex.com/pokemon/bulbasaur"), /<lastmod>2026-03-14<\/lastmod>/);
+  // The FR page renders the same entity, so it must carry the same date.
+  assert.match(block("https://my-pokedex.com/fr/pokemon/bulbizarre"), /<lastmod>2026-03-14<\/lastmod>/);
+  // An id absent from the map falls back to the baseline constant.
+  assert.match(block("https://my-pokedex.com/pokemon/ivysaur"), new RegExp(`<lastmod>${LASTMOD}</lastmod>`));
+});
+
+test("code-derived URLs keep the baseline constant, not an entity date", () => {
+  const xml = buildSitemap({
+    idToEnSlug: { 1: "bulbasaur" },
+    idToFrSlug: { 1: "bulbizarre" },
+    frTypeSlugs: [],
+    entityLastmod: { 1: "2026-03-14" },
+  });
+  const block = (loc) => xml.split("<url>").find((b) => b.includes(`<loc>${loc}</loc>`));
+  assert.match(block("https://my-pokedex.com/"), new RegExp(`<lastmod>${LASTMOD}</lastmod>`));
+  assert.match(
+    block("https://my-pokedex.com/type-interactions/normal"),
+    new RegExp(`<lastmod>${LASTMOD}</lastmod>`)
+  );
+});
+
+test("an empty entityLastmod reproduces the previous single-constant output", () => {
+  const args = { idToEnSlug: { 1: "bulbasaur" }, idToFrSlug: { 1: "bulbizarre" }, frTypeSlugs: [] };
+  assert.equal(buildSitemap(args), buildSitemap({ ...args, entityLastmod: {} }));
+});

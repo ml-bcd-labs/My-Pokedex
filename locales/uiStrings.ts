@@ -7,6 +7,7 @@ export type UiStrings = {
   navFilterAria: string;
   navOptionsAria: string;
   navHomeAria: string;
+  navLogoAlt: string;
   navPrimaryLabel: string;
   searchPlaceholder: string;
   searchSubmit: string;
@@ -75,6 +76,7 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     navFilterAria: "Filter by type",
     navOptionsAria: "Options",
     navHomeAria: "My Pokédex — home",
+    navLogoAlt: "My Pokédex",
     navPrimaryLabel: "Primary",
     searchPlaceholder: "Search a Pokemon by name or id",
     searchSubmit: "Submit",
@@ -143,6 +145,7 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     navFilterAria: "Filtrer par type",
     navOptionsAria: "Options",
     navHomeAria: "My Pokédex — accueil",
+    navLogoAlt: "My Pokédex",
     navPrimaryLabel: "Principale",
     searchPlaceholder: "Rechercher un Pokémon par nom ou numéro",
     searchSubmit: "Envoyer",

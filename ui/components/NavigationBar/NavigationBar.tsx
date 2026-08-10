@@ -120,10 +120,14 @@ const NavigationBar = () => {
       <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`} aria-label={strings.navPrimaryLabel}>
         <div className={styles.bar}>
           <Link href={homeHref} className={styles.logoLink} aria-label={strings.navHomeAria}>
+            {/* The link's aria-label already names this for assistive tech, so the
+                alt text is not announced twice — it exists for crawlers and for
+                images-off rendering. Bing Webmaster reports a bare alt="" here as
+                a missing-alt notice regardless of the surrounding aria-label. */}
             <img
               className={styles.logo}
               src="/icons/logo.webp"
-              alt=""
+              alt={strings.navLogoAlt}
               width={400}
               height={143}
               fetchPriority="high"

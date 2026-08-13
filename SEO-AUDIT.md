@@ -32,6 +32,7 @@ click-depth>3 2013→0, security headers added. 1 finding open by design (flat `
 - **`_headers` honored by Workers assets** — confirm live after each deploy (same mechanism as `_redirects`, which works).
 - **Publisher identity / ad-config** — no ads/analytics; if either is ever re-added, re-open the ads + consent scope (ads.txt, publisher ID, CMP, region-scoped Consent Mode).
 - **`lastmod` policy** — pinned constant, bumped only on real content change; keep it that way (do not switch to `new Date()`).
+- **PWA candidacy & installability** (2026-08-13, seo rev 3): candidacy **yes** — a dex people re-open, so the home-screen icon earns its place. `public/site.webmanifest` `display:standalone`, icons 192/512 + maskable-512 (maskable content 182.5 px of the 204.8 px safe radius — the tightest in the portfolio, still inside; keep redrawn icons inside it). Offline: `public/sw.js`, registered in `pages/_app.tsx`.
 - **Fast-movers** — re-verify AI-crawler platform defaults + Cloudflare AI Crawl Control against primary sources on the next audit.
 
 ## Currently-active suppressions / open-by-design

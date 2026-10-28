@@ -17,6 +17,12 @@ describe("Footer", () => {
 
   it("shows a Pokémon non-affiliation disclaimer", () => {
     render(<Footer />);
-    expect(screen.getByText(/not affiliated with|nintendo|game freak/i)).toBeInTheDocument();
+    expect(screen.getByText(/not affiliated with/i)).toBeInTheDocument();
+  });
+
+  it("credits the IP owners instead of claiming a copyright for the site", () => {
+    render(<Footer />);
+    expect(screen.getByText("Pokémon © Nintendo / Creatures / GAME FREAK.")).toBeInTheDocument();
+    expect(screen.queryByText(/© My Pok/)).not.toBeInTheDocument();
   });
 });

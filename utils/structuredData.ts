@@ -11,14 +11,6 @@ export const websiteJsonLd = (): JsonLd => ({
   // 21 Nov 2024, so it is inert markup.
 });
 
-export const organizationJsonLd = (): JsonLd => ({
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE_NAME,
-  url: SITE_ORIGIN,
-  logo: absoluteUrl("/icons/icon-512.png"),
-});
-
 // No `inLanguage`: schema.org gives it no domain on BreadcrumbList/ItemList, so
 // it failed vocabulary validation on every FR detail page. The page language is
 // already declared by <html lang> and hreflang.

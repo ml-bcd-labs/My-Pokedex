@@ -29,7 +29,9 @@ const Footer = ({ embedded = false }: IProps) => {
       <p className={styles.disclaimer}>
         {SITE_NAME} {strings.footerDisclaimer}
       </p>
-      <p>© {SITE_NAME}</p>
+      {/* Credit the IP owners, never the site: no publisher/owner identity is
+          claimed for a fan site built on Nintendo's IP. */}
+      <p>Pokémon © Nintendo / Creatures / GAME FREAK.</p>
     </footer>
   );
 };

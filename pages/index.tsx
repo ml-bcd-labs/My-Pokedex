@@ -19,7 +19,7 @@ import ErrorScreenWrapper from "../ui/components/Wrappers/ErrorScreenWrapper/Err
 import Page from "../ui/templates/Page/Page";
 import VirtualGrid from "../ui/templates/VirtualGrid/VirtualGrid";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
-import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
+import { websiteJsonLd } from "../utils/structuredData";
 import { hreflangAlternates } from "../utils/hreflang";
 import BrowseIndexStatic from "../ui/components/BrowseIndex/BrowseIndexStatic";
 import { BrowseIndexContent } from "../ui/components/BrowseIndex/BrowseIndex";
@@ -96,7 +96,7 @@ const HomePage = ({ pokemons, browseIndexHtml, browseAria, browseClassName }: IP
         description={DEFAULT_DESCRIPTION}
         canonicalPath="/"
         alternates={hreflangAlternates("/", "/fr")}
-        jsonLd={[websiteJsonLd(), organizationJsonLd()]}
+        jsonLd={[websiteJsonLd()]}
       />
       <ErrorScreenWrapper>
         {/* No loading gate here: the home page is SSG, so the cards (and the LCP

@@ -43,7 +43,10 @@ a {
   padding: 10px 18px;
   border-radius: 8px;
   background: #b91c1c;
-  color: #fff;
+  /* !important: the light theme's `.container[data-theme=light] a { color:#cc0000 }`
+     (App.module.css) outspecifies this class and turned the link red-on-red
+     (~1.1:1). White on #b91c1c is ~6.5:1. */
+  color: #fff !important;
   font-weight: 700;
   text-decoration: none;
   transition: top 0.15s ease;

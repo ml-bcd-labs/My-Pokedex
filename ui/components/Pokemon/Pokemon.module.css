@@ -199,7 +199,12 @@
   margin: 10px 14px 14px;
   padding: 13px 15px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.14);
+  /* Dark tint, not rgba(255,255,255,0.14): the card gradient fades to
+     translucent black, so on the light theme the pale page showed through and
+     the white fill lifted it further — the small white stat labels measured
+     4.26–4.49:1. The dark tint (same fix as the details-page glass) keeps the
+     frosted look and puts them above 7:1 in both themes. */
+  background: rgba(0, 0, 0, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.28);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -240,8 +245,10 @@
   margin-top: 7px;
   font-size: calc(12px * var(--font-scale));
   font-weight: bold;
-  /* White stat label + value regardless of the global link-colour rule. */
+  /* White stat label + value regardless of the global link-colour rule. The
+     soft shadow lifts the small 10-12px labels off the light end of the glass. */
   color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 .stat:first-child {
   margin-top: 0;
@@ -253,7 +260,7 @@
      the flex:1 .track bar below. */
   width: 3.4em;
   flex-shrink: 0;
-  opacity: 0.9;
+  /* No opacity dimming: at 0.9 the label measured 4.26-4.49:1 (below AA). */
 }
 .track {
   flex: 1;
@@ -278,7 +285,6 @@
   width: 26px;
   flex-shrink: 0;
   text-align: right;
-  opacity: 0.95;
 }
 
 /* Mobile scroll-spotlight: the card crossing the viewport center gets the same

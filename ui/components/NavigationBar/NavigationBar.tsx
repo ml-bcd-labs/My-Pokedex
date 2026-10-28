@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
@@ -20,6 +20,10 @@ import { useLocale, useStrings } from "../../../hooks/useLocale";
 const DRAWER_ELEMENT_ID = "drawerElementId";
 const FILTER_ELEMENT_ID = "filterButtonId";
 const SCROLL_HIDE_THRESHOLD = 120;
+// The options sheet only exists below this width (NavigationBar.module.css).
+const SHEET_MEDIA_QUERY = "(max-width: 900px)";
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 const NavigationBar = () => {
   const router = useRouter();
@@ -28,6 +32,13 @@ const NavigationBar = () => {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  // Set when the sheet is dismissed by the user (Escape / overlay tap) so focus
+  // goes back to the Options button — not on route changes, where it should
+  // follow the navigation instead.
+  const returnFocusRef = useRef(false);
 
   // Locale-aware destinations: the FR chrome links into the /fr tree, the EN
   // chrome keeps the root routes (unchanged output on English pages).
@@ -70,6 +81,80 @@ const NavigationBar = () => {
 
   // Close the mobile options sheet whenever the route changes.
   useEffect(() => setMenuOpen(false), [router.pathname]);
+
+  const dismissMenu = () => {
+    returnFocusRef.current = true;
+    setMenuOpen(false);
+  };
+
+  // While the options sheet is open it behaves as a modal (WCAG 2.4.11 / 2.1.2):
+  // everything else is `inert` (so focus can never land on content hidden behind
+  // the sheet and overlay), Tab cycles inside the sheet, Escape closes it, and
+  // focus returns to the Options button.
+  useEffect(() => {
+    const overlay = overlayRef.current;
+    const sheet = sheetRef.current;
+    if (!menuOpen || !overlay?.parentElement || !sheet) {
+      if (returnFocusRef.current) {
+        returnFocusRef.current = false;
+        menuBtnRef.current?.focus();
+      }
+      return;
+    }
+
+    const background = Array.from(overlay.parentElement.children).filter(
+      (el): el is HTMLElement => el !== overlay && el instanceof HTMLElement && !el.inert,
+    );
+    background.forEach((el) => {
+      el.inert = true;
+    });
+
+    const focusables = () =>
+      Array.from(sheet.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => el.getClientRects().length > 0,
+      );
+    focusables()[0]?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        returnFocusRef.current = true;
+        setMenuOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const list = focusables();
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      const active = document.activeElement;
+      const inside = active instanceof Node && sheet.contains(active);
+      if (event.shiftKey && (!inside || active === first)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (!inside || active === last)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    // The sheet is mobile-only: if the viewport grows past the breakpoint while
+    // it is open, close it rather than leave the page inert behind a hidden sheet.
+    const media = window.matchMedia(SHEET_MEDIA_QUERY);
+    const onMediaChange = () => {
+      if (!media.matches) setMenuOpen(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    media.addEventListener("change", onMediaChange);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      media.removeEventListener("change", onMediaChange);
+      background.forEach((el) => {
+        el.inert = false;
+      });
+    };
+  }, [menuOpen]);
 
   const openDrawer = (drawer: HTMLElement, button: HTMLElement) => {
     addClassToElement(drawer, styles.open);
@@ -178,6 +263,7 @@ const NavigationBar = () => {
 
           {/* Mobile-only overflow menu trigger. */}
           <button
+            ref={menuBtnRef}
             type="button"
             className={`${styles.menuBtn} ${menuOpen ? styles.menuActive : ""}`}
             onClick={() => setMenuOpen((open) => !open)}
@@ -195,14 +281,21 @@ const NavigationBar = () => {
       </nav>
 
       {/* Mobile-only options sheet: type filter + sort + theme + resolution. */}
+      {/* The overlay's click only dismisses when the backdrop itself is hit
+          (not a bubbled click from inside the sheet). It is a pointer
+          convenience: keyboard users close with Escape. */}
       <div
+        ref={overlayRef}
+        role="presentation"
         className={`${styles.sheetOverlay} ${menuOpen ? styles.sheetOpen : ""}`}
-        onClick={() => setMenuOpen(false)}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) dismissMenu();
+        }}
       >
         {/* `inert` when closed: the sheet stays display:block (only opacity/
             transform hide it on mobile), so without this its controls remain
             keyboard-focusable and announced to screen readers as ghost tab stops. */}
-        <div className={styles.sheet} onClick={(e) => e.stopPropagation()} inert={!menuOpen}>
+        <div ref={sheetRef} className={styles.sheet} inert={!menuOpen}>
 
           <div className={styles.sheetHandle} />
           <div className={styles.sheetControls}>{renderControls()}</div>

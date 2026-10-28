@@ -2,13 +2,13 @@
   "schema_version": 1,
   "audit": "seo",
   "site": "my-pokedex",
-  "generated_at": "2026-08-13T18:47:56Z",
+  "generated_at": "2026-10-28T08:46:10Z",
   "target": {
-    "ref": "b61ad5412c62180980ba277a68bb3f29bbe9d866",
+    "ref": "707b3ad968fdd18429d87a01d4110f90b628743f",
     "url": "https://my-pokedex.com"
   },
-  "pages_audited": 1,
-  "report_path": "audits/seo/2026-08-13-report.md",
+  "pages_audited": 2404,
+  "report_path": "audits/seo/2026-10-28-report.md",
   "checks_run": {
     "raw-html-content": 1,
     "robots-txt-valid": 1,
@@ -46,23 +46,53 @@
   },
   "checks_skipped": {
     "ads-txt-valid": "Ad-free site; AdSense abandoned 2026-07-09 (Nintendo IP), all ad code removed; no ads.txt needed",
-    "ad-unit-renders": "Ad-free site; no ad loader script present",
-    "publisher-id-correct": "Ad-free site; no ad publisher ID",
-    "cmp-consent-footer": "No CMP; consent-requiring analytics (GA4) removed in commit 7da08ec",
+    "ad-unit-renders": "Ad-free site; no ad loader script on any of the 2404 crawled pages",
+    "publisher-id-correct": "Ad-free site; no ad publisher ID present",
+    "cmp-consent-footer": "No CMP; consent-requiring analytics (GA4) removed in commit 7da08ec; privacy policy states no cookies/ads/analytics",
     "consent-mode-region-scoped": "No analytics or Consent Mode; site sets no tracking cookies"
   },
   "issues": [
     {
-      "check_id": "lastmod-honest",
+      "check_id": "title-length",
       "severity": "moderate",
       "count": 1,
-      "note": "All 2404 sitemap URLs share lastmod 2026-07-07 (flat). Left open by design: it is a manually-pinned constant (scripts/generateSitemap.mjs LASTMOD), explicitly not new Date(), bumped only when content actually changes, so it never stamps today on unchanged URLs across redeploys. Introducing per-page dates without real per-entity change tracking would be less honest. Revisit when per-entity modification timestamps exist."
+      "note": "2364 of 2404 titles exceed the ~60-char effective range (61-82; 207 over 70). Cause: detail-page template suffix ' — Stats, Types, Weaknesses & Evolution | Pokédex'. None too short (min 54)."
+    },
+    {
+      "check_id": "meta-description-unique",
+      "severity": "minor",
+      "count": 1,
+      "note": "Templated near-duplicates: all 171 EN + 171 FR type-interactions descriptions are one fixed sentence with only the type name swapped ('Type effectiveness for X: which types it is weak to, which it resists, and which it deals the most damage against.'). Detail-page descriptions carry real per-entity data and pass."
+    },
+    {
+      "check_id": "meta-description-length",
+      "severity": "minor",
+      "count": 1,
+      "note": "85 descriptions above 160 chars (161-174), mostly long-named detail pages plus /fr/about, /fr/contact, /fr/terms; none short (min 116)."
+    },
+    {
+      "check_id": "schema-valid",
+      "severity": "moderate",
+      "count": 2,
+      "note": "(a) inLanguage on BreadcrumbList on every FR detail page; it is not a schema.org property of ItemList/BreadcrumbList (utils/structuredData.ts:30-36). (b) Home WebSite ships the retired Sitelinks-Searchbox SearchAction/query-input, inert since 21 Nov 2024 and on the do-not-implement list (utils/structuredData.ts:11-16)."
+    },
+    {
+      "check_id": "eeat-identity",
+      "severity": "moderate",
+      "count": 1,
+      "note": "No identifiable publisher/author: About says 'built and maintained by an independent developer', contact is a mailto only, no outbound data-source citations. Owner decision (IP-adjacent fan site); identity must never be fabricated."
+    },
+    {
+      "check_id": "core-web-vitals",
+      "severity": "moderate",
+      "count": 1,
+      "note": "Lab CLS > 0.1 on three templates; LCP/TBT good everywhere. / desktop CLS 0.685 and 0.085 across Lighthouse runs (page header + VirtualGrid snap to container width ~0.6-1.0 s after load), /fr/about desktop 0.252 on 3 runs, /about mobile 0.150 on 2 runs. Detail/type pages 0-0.015. Field CWV pending."
     }
   ],
   "issue_counts": {
     "critical": 0,
     "serious": 0,
-    "moderate": 1,
-    "minor": 0
+    "moderate": 5,
+    "minor": 2
   }
 }

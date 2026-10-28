@@ -31,7 +31,7 @@ const FrTypeInteractionsPage = () => {
   return (
     <>
       <Header
-        title="Interactions de types Pokémon — Faiblesses & Résistances | Pokédex"
+        title="Interactions de types — Faiblesses & Résistances | Pokédex"
         description="Choisissez un type (ou deux) pour voir les dégâts qu'il subit et inflige à chaque autre type. Tableau complet d'efficacité des types Pokémon."
         canonicalPath={canonicalPath}
         alternates={hreflangAlternates(enHref, frHref)}

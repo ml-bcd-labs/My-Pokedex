@@ -8,7 +8,7 @@ import { hreflangAlternates } from "../../utils/hreflang";
 const TermsPageFr = () => (
   <>
     <Header
-      title={`Conditions d’utilisation de ${SITE_NAME} — vos droits et vos devoirs`}
+      title={`Conditions d’utilisation de ${SITE_NAME} — droits et devoirs`}
       description={`Les conditions d’utilisation de ${SITE_NAME} : usage acceptable, données Pokémon compilées indépendamment, propriété intellectuelle et avertissements.`}
       canonicalPath="/fr/terms"
       alternates={hreflangAlternates("/terms", "/fr/terms")}

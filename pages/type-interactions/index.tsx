@@ -29,7 +29,7 @@ const TypeInteractionsPage = () => {
   return (
     <>
       <Header
-        title="Pokémon Type Interactions — Weakness & Strength Chart | Pokédex"
+        title="Pokémon Type Interactions — Weakness Chart | Pokédex"
         description="Pick a type (or two) to see the damage it takes from and deals to every other type. Full Pokémon type effectiveness chart."
         canonicalPath={canonicalPath}
         alternates={hreflangAlternates(enHref, frHref)}

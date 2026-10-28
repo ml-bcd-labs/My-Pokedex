@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "audit": "web-accessibility",
+  "site": "my-pokedex",
+  "generated_at": "2026-10-28T08:46:10Z",
+  "target": {
+    "ref": "707b3ad968fdd18429d87a01d4110f90b628743f",
+    "url": "https://my-pokedex.com"
+  },
+  "pages_audited": 22,
+  "report_path": "audits/web-accessibility/2026-10-28-report.md",
+  "checks_run": {
+    "axe-violations": 1,
+    "keyboard-operable": 1,
+    "no-keyboard-trap": 1,
+    "visible-focus": 1,
+    "focus-order-logical": 1,
+    "skip-link": 1,
+    "reflow-320": 1,
+    "zoom-400": 1,
+    "zoom-not-disabled": 1,
+    "reduced-motion": 1,
+    "text-contrast": 1,
+    "ui-contrast": 1,
+    "form-labels": 1,
+    "headings-landmarks": 1,
+    "accessible-names": 1,
+    "alt-text": 1,
+    "target-size": 1,
+    "status-announcements": 1,
+    "descriptive-links": 1,
+    "aria-current": 1,
+    "framework-a11y-lint": 1,
+    "lighthouse-a11y-100": 1,
+    "wcag-checklist-disposition": 1
+  },
+  "checks_skipped": {
+    "form-errors-associated": "The only form is the global site search; it has no validation or error states (blank submit navigates home), so there are no errors to identify or associate.",
+    "autocomplete-tokens": "The only form field is a free-text site search (autoComplete=off); no personal-data inputs exist that would carry autocomplete tokens.",
+    "captions": "Site has no video or audio content (0 video/audio/iframe/object/embed on audited pages)."
+  },
+  "issues": [
+    {
+      "check_id": "text-contrast",
+      "severity": "serious",
+      "count": 2,
+      "note": "(1) Skip link renders red on red when focused: text #cc0000 on #b91c1c (~1.1:1), stable 2.5 s after focus. (2) Home-grid card stat labels Atk/Def/Spd (10px bold white, opacity .9) measure 4.26-4.49:1 on the card glass/gradient, below 4.5:1 (79 hand-measured failing nodes on /, glyph-pixel method)."
+    },
+    {
+      "check_id": "visible-focus",
+      "severity": "serious",
+      "count": 1,
+      "note": "WCAG 2.4.11: with the mobile Options bottom sheet open, Tab leaves the sheet's controls and moves into page content fully covered by the sheet/overlay; every subsequent stop is obscured (14 consecutive stops checked via elementFromPoint). Escape does not close the sheet; focus is not contained or returned."
+    },
+    {
+      "check_id": "reflow-320",
+      "severity": "serious",
+      "count": 2,
+      "note": "(a) /type-interactions and /fr/type-interactions: h1 word 'Interactions' overflows, 8px horizontal page scroll at 320px (scrollWidth 328) and the last glyph is cut. (b) Detail template: on 82 of the 120 longest-named detail pages the h1 spills past both viewport edges and glass sections reach 323-342px, clipped by Details-module__wrap overflow:hidden, so name and text are lost (e.g. /pokemon/basculegion-male, /pokemon/squawkabilly-green-plumage). Same defects at 400% zoom (320x256)."
+    },
+    {
+      "check_id": "headings-landmarks",
+      "severity": "serious",
+      "count": 1,
+      "note": "WCAG 1.3.1: detail pages expose only the h1. Visual section headings (Pokedex entry, Base stats, Profile, Abilities, Type effectiveness, Evolution) are div.Details-module__paneTitle, so they cannot be reached by heading navigation, across 2050 detail pages."
+    },
+    {
+      "check_id": "target-size",
+      "severity": "moderate",
+      "count": 1,
+      "note": "WCAG 2.5.8: A-Z browse index (details 'Browse all Pokémon (A–Z)') name links are 20.8px tall at 22.4px pitch; axe target-size fails 1025 nodes at 320px / 1018 at 1280 when opened. They form a list, not inline text. This is the only axe violation found; recorded here, not double-counted under axe-violations."
+    },
+    {
+      "check_id": "framework-a11y-lint",
+      "severity": "moderate",
+      "count": 1,
+      "note": "eslint-plugin-jsx-a11y recommended: 10 errors. Rendered code: ui/components/NavigationBar/NavigationBar.tsx:198 (sheet overlay onClick, no key handler, static element) and :205, 2 rules each, 4 errors. Dead code (not rendered anywhere): ui/components/Pokemon/EvolutionChainPokemon.tsx:24,34,35, 6 errors."
+    },
+    {
+      "check_id": "aria-current",
+      "severity": "minor",
+      "count": 1,
+      "note": "Footer nav link to the current page lacks aria-current on /about, /privacy, /contact, /terms (primary and bottom-tab navs do set it)."
+    },
+    {
+      "check_id": "wcag-checklist-disposition",
+      "severity": "moderate",
+      "count": 1,
+      "note": "Checklist row 1.4.12 Text Spacing = Fail: with the WCAG spacing override, A-Z and 'Browse every type matchup' index links truncate with an ellipsis (e.g. 'Electric / Fighting', long Pokémon names), so text is lost. No dedicated registry check exists for text spacing."
+    }
+  ],
+  "issue_counts": {
+    "critical": 0,
+    "serious": 6,
+    "moderate": 3,
+    "minor": 1
+  }
+}

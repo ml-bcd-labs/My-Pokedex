@@ -130,6 +130,10 @@
 }
 .heroTop h1 {
   margin: 0;
+  /* Long names ("Squawkabilly-green-plumage") would otherwise spill past the
+     320px viewport and be clipped by .wrap's overflow:hidden (WCAG 1.4.10). */
+  max-width: 100%;
+  overflow-wrap: anywhere;
   font-size: calc(clamp(32px, 6vw, 46px) * var(--font-scale));
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
 }
@@ -198,9 +202,16 @@
 /* ---- glass panels ---- */
 .panes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
   margin-top: 8px;
+}
+/* Grid items default to min-width:auto (their min-content), so one long
+   unbreakable word pushed a pane past the 320px viewport where .wrap clipped it.
+   min-width:0 keeps each pane inside its column; break-word wraps the word. */
+.panes > * {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 .glass {
   /* Was rgba(255,255,255,0.14): the white fill lightened the panel and dropped
@@ -213,8 +224,14 @@
   border-radius: 18px;
   padding: 16px 18px;
 }
-.paneTitle {
+/* Section titles are <h2>s (screen-reader heading navigation). The doubled
+   `.panes .glass h2` scoping outspecifies App.module.css's
+   `.container[data-resolution="high res."] h2 { font-size: 30px }` so they keep
+   the small uppercase look. */
+.paneTitle,
+.panes .glass h2.paneTitle {
   margin: 0 0 12px;
+  line-height: normal;
   font-size: calc(12px * var(--font-scale));
   font-weight: bold;
   text-transform: uppercase;
@@ -401,7 +418,7 @@
     transform: translateX(50%);
   }
   .panes {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .eff {
     grid-template-columns: repeat(3, 1fr);

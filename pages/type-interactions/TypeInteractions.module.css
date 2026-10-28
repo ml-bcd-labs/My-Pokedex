@@ -188,6 +188,8 @@
   margin: 4px 0 0;
   font-weight: bold;
   font-size: 26px;
+  /* "Interactions" in the wide pixel font is wider than a 320px viewport. */
+  overflow-wrap: anywhere;
   color: var(--ink);
 }
 

@@ -189,12 +189,12 @@ const DetailsPage = ({
 
               <div className={styles.panes}>
                 <section className={`${styles.glass} ${styles.entry}`}>
-                  <div className={styles.paneTitle}>Pokedex entry</div>
+                  <h2 className={styles.paneTitle}>Pokedex entry</h2>
                   <p>{description}</p>
                 </section>
 
                 <section className={styles.glass}>
-                  <div className={styles.paneTitle}>Base stats</div>
+                  <h2 className={styles.paneTitle}>Base stats</h2>
                   {stats.map((stat) => (
                     <div className={styles.statline} key={stat.label}>
                       <span className={styles.statLabel}>{stat.label}</span>
@@ -207,7 +207,7 @@ const DetailsPage = ({
                 </section>
 
                 <section className={styles.glass}>
-                  <div className={styles.paneTitle}>Profile</div>
+                  <h2 className={styles.paneTitle}>Profile</h2>
                   <div className={styles.spec}>
                     <b>Height</b><span>{`${convertCmtoMeterString(height)} (${cmToFeetString(height)})`}</span>
                     <b>Weight</b><span>{`${joinValueWithUnit(weight, "kg")} (${kgToPoundsString(weight)})`}</span>
@@ -217,14 +217,14 @@ const DetailsPage = ({
                 </section>
 
                 <section className={`${styles.glass} ${styles.effWrap}`}>
-                  <div className={styles.paneTitle}>Type effectiveness</div>
+                  <h2 className={styles.paneTitle}>Type effectiveness</h2>
                   {renderEffectivenessGrid("Damage taken", defensiveEffectiveness)}
                   {renderEffectivenessGrid("Damage dealt", offensiveEffectiveness)}
                 </section>
 
                 {evolutionChain.length > 1 && (
                   <section className={`${styles.glass} ${styles.evoWrap}`}>
-                    <div className={styles.paneTitle}>Evolution</div>
+                    <h2 className={styles.paneTitle}>Evolution</h2>
                     <div className={styles.evo}>
                       {evolutionChain.map((stage, index) => (
                         <Fragment key={stage.id}>

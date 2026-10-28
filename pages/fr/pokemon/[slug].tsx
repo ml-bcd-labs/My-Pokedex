@@ -208,13 +208,13 @@ const FrDetailsPage = ({
 
               <div className={styles.panes}>
                 <section className={`${styles.glass} ${styles.entry}`}>
-                  <div className={styles.paneTitle}>{strings.detailPokedexEntry}</div>
+                  <h2 className={styles.paneTitle}>{strings.detailPokedexEntry}</h2>
                   <p>{geoIntro}</p>
                   <p>{frDescription}</p>
                 </section>
 
                 <section className={styles.glass}>
-                  <div className={styles.paneTitle}>{strings.detailBaseStats}</div>
+                  <h2 className={styles.paneTitle}>{strings.detailBaseStats}</h2>
                   {stats.map((stat) => (
                     <div className={styles.statline} key={stat.label}>
                       <span className={styles.statLabel}>{FR_STAT_LABELS[stat.label] ?? stat.label}</span>
@@ -227,7 +227,7 @@ const FrDetailsPage = ({
                 </section>
 
                 <section className={styles.glass}>
-                  <div className={styles.paneTitle}>{strings.detailProfile}</div>
+                  <h2 className={styles.paneTitle}>{strings.detailProfile}</h2>
                   <div className={styles.spec}>
                     <b>{strings.detailHeight}</b><span>{`${convertCmtoMeterString(height)} (${cmToFeetString(height)})`}</span>
                     <b>{strings.detailWeight}</b><span>{`${joinValueWithUnit(weight, "kg")} (${kgToPoundsString(weight)})`}</span>
@@ -237,14 +237,14 @@ const FrDetailsPage = ({
                 </section>
 
                 <section className={`${styles.glass} ${styles.effWrap}`}>
-                  <div className={styles.paneTitle}>{strings.detailTypeEffectiveness}</div>
+                  <h2 className={styles.paneTitle}>{strings.detailTypeEffectiveness}</h2>
                   {renderEffectivenessGrid(strings.detailDamageTaken, defensiveEffectiveness)}
                   {renderEffectivenessGrid(strings.detailDamageDealt, offensiveEffectiveness)}
                 </section>
 
                 {evolutionChain.length > 1 && (
                   <section className={`${styles.glass} ${styles.evoWrap}`}>
-                    <div className={styles.paneTitle}>{strings.detailEvolution}</div>
+                    <h2 className={styles.paneTitle}>{strings.detailEvolution}</h2>
                     <div className={styles.evo}>
                       {evolutionChain.map((stage, index) => (
                         <Fragment key={stage.id}>

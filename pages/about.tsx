@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
@@ -25,7 +26,7 @@ const AboutPage = () => (
         <p>
           {SITE_NAME} is built and maintained by an independent developer. For
           questions, corrections, or feedback, see our{" "}
-          <a href="/contact">contact page</a>.
+          <Link href="/contact">contact page</Link>.
         </p>
 
         <h2>Trademark &amp; affiliation</h2>

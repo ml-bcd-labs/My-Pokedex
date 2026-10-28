@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "../../ui/components/Header/Header";
 import Page from "../../ui/templates/Page/Page";
 import LegalLayout from "../../ui/components/LegalLayout/LegalLayout";
@@ -8,7 +9,7 @@ const AboutPageFr = () => (
   <>
     <Header
       title={`À propos de ${SITE_NAME} — un Pokédex indépendant et non officiel`}
-      description={`Ce qu’est ${SITE_NAME}, qui le réalise, comment ses statistiques et tableaux de types sont compilés, et sa relation nominative et non affiliée avec la licence Pokémon.`}
+      description={`Ce qu’est ${SITE_NAME}, qui le réalise, comment ses statistiques et tableaux de types sont compilés, et sa relation non affiliée avec la licence Pokémon.`}
       canonicalPath="/fr/about"
       alternates={hreflangAlternates("/about", "/fr/about")}
       ogLocale="fr_FR"
@@ -27,7 +28,7 @@ const AboutPageFr = () => (
         <p>
           {SITE_NAME} est développé et maintenu par un développeur indépendant. Pour
           toute question, correction ou suggestion, consultez notre{" "}
-          <a href="/fr/contact">page de contact</a>.
+          <Link href="/fr/contact">page de contact</Link>.
         </p>
 
         <h2>Marques &amp; affiliation</h2>

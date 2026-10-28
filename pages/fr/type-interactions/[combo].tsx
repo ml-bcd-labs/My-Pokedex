@@ -13,6 +13,8 @@ import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import { hreflangAlternates } from "../../../utils/hreflang";
 import { frTypeComboItems, groupAlphabetically } from "../../../utils/browseIndex";
+import { matchupSummary } from "../../../utils/pokemonTypes/matchups";
+import { frComboDescription, frComboTitle } from "../../../utils/pokemonMeta";
 import { useStrings } from "../../../hooks/useLocale";
 import type { SwitchTarget } from "../../../context/SwitchTargetContext";
 
@@ -24,13 +26,14 @@ interface IProps {
 
 const FrComboPage = ({ combo, types }: IProps) => {
   const strings = useStrings();
-  const label = types.map((t) => FR_TYPE_LABELS[t] ?? capitalizeFirstLetter(t)).join(" / ");
+  const frLabel = (t: string) => FR_TYPE_LABELS[t] ?? capitalizeFirstLetter(t);
+  const label = types.map(frLabel).join(" / ");
 
   return (
     <>
       <Header
-        title={`${label} — Faiblesses, Résistances & Meilleurs Matchups | Pokédex`}
-        description={`Efficacité des types pour ${label} : à quels types il est faible, lesquels il résiste, et contre lesquels il inflige le plus de dégâts.`}
+        title={frComboTitle(label)}
+        description={frComboDescription(label, matchupSummary(types), frLabel)}
         canonicalPath={`/fr/type-interactions/${combo}`}
         alternates={hreflangAlternates(`/type-interactions/${toTypeSlug(types)}`, `/fr/type-interactions/${combo}`)}
         ogLocale="fr_FR"

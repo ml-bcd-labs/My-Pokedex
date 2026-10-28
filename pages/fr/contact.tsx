@@ -8,7 +8,7 @@ const ContactPageFr = () => (
   <>
     <Header
       title={`Contacter ${SITE_NAME} — questions, corrections et suggestions`}
-      description={`Comment contacter l’équipe de ${SITE_NAME} pour signaler une correction, poser une question ou envoyer vos suggestions sur le Pokédex, ses statistiques et ses types.`}
+      description={`Comment contacter l’équipe de ${SITE_NAME} pour signaler une erreur, poser une question ou envoyer vos suggestions sur le Pokédex, ses stats et ses types.`}
       canonicalPath="/fr/contact"
       alternates={hreflangAlternates("/contact", "/fr/contact")}
       ogLocale="fr_FR"

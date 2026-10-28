@@ -25,7 +25,7 @@ import { FR_STAT_LABELS } from "../../../constants/FrStatLabels";
 import { hreflangAlternates } from "../../../utils/hreflang";
 import { breadcrumbJsonLd } from "../../../utils/structuredData";
 import { generationFromId } from "../../../constants/Generations";
-import { baseStatTotal, frDetailDescription } from "../../../utils/pokemonMeta";
+import { baseStatTotal, frDetailDescription, frDetailTitle } from "../../../utils/pokemonMeta";
 import { geoIntroFr } from "../../../utils/fr/geoIntro";
 import type { SwitchTarget } from "../../../context/SwitchTargetContext";
 
@@ -128,7 +128,7 @@ const FrDetailsPage = ({
   return (
     <>
       <Header
-        title={`${displayName} (#${formatNumberToMatchLength(id)}) — Stats, Types, Faiblesses & Évolution | Pokédex`}
+        title={frDetailTitle(displayName, id)}
         description={frDetailDescription({
           displayName,
           category: frCategory ?? "",
@@ -144,13 +144,10 @@ const FrDetailsPage = ({
         imageAlt={`Illustration de ${displayName}`}
         ogType="article"
         twitterCard="summary"
-        jsonLd={breadcrumbJsonLd(
-          [
-            { name: "Pokédex", path: "/fr" },
-            { name: displayName, path: `/fr/pokemon/${slug}` },
-          ],
-          "fr",
-        )}
+        jsonLd={breadcrumbJsonLd([
+          { name: "Pokédex", path: "/fr" },
+          { name: displayName, path: `/fr/pokemon/${slug}` },
+        ])}
       />
       {/* Plan 6: hreflang, og:locale fr_FR, self-canonical, BreadcrumbList JSON-LD, GEO opener, localized alt */}
       <ErrorScreenWrapper>

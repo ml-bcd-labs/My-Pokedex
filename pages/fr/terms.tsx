@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "../../ui/components/Header/Header";
 import Page from "../../ui/templates/Page/Page";
 import LegalLayout from "../../ui/components/LegalLayout/LegalLayout";
@@ -8,7 +9,7 @@ const TermsPageFr = () => (
   <>
     <Header
       title={`Conditions d’utilisation de ${SITE_NAME} — vos droits et vos devoirs`}
-      description={`Les conditions régissant votre utilisation de ${SITE_NAME} : usage acceptable, données Pokémon compilées indépendamment, propriété intellectuelle et avertissements.`}
+      description={`Les conditions d’utilisation de ${SITE_NAME} : usage acceptable, données Pokémon compilées indépendamment, propriété intellectuelle et avertissements.`}
       canonicalPath="/fr/terms"
       alternates={hreflangAlternates("/terms", "/fr/terms")}
       ogLocale="fr_FR"
@@ -26,7 +27,7 @@ const TermsPageFr = () => (
         <p>
           Pokémon et les marques associées sont des marques déposées de Nintendo,
           Game Freak et The Pokémon Company&nbsp;; {SITE_NAME}{" "}n&apos;y est pas
-          affilié (voir notre <a href="/fr/about">page À propos</a>). Les données
+          affilié (voir notre <Link href="/fr/about">page À propos</Link>). Les données
           compilées de manière indépendante sur ce site peuvent être citées avec
           attribution.
         </p>

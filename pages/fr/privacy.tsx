@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "../../ui/components/Header/Header";
 import Page from "../../ui/templates/Page/Page";
 import LegalLayout from "../../ui/components/LegalLayout/LegalLayout";
@@ -8,7 +9,7 @@ const PrivacyPageFr = () => (
   <>
     <Header
       title={`Politique de confidentialité — aucun cookie ni suivi | ${SITE_NAME}`}
-      description={`Comment ${SITE_NAME} traite vos données : aucun cookie, aucune publicité, aucune analyse d’audience ni suivi tiers. Ce que le site conserve et ne collecte jamais.`}
+      description={`Comment ${SITE_NAME} traite vos données : ni cookie, ni publicité, ni mesure d’audience, ni suivi tiers. Ce que le site garde et ne collecte jamais.`}
       canonicalPath="/fr/privacy"
       alternates={hreflangAlternates("/privacy", "/fr/privacy")}
       ogLocale="fr_FR"
@@ -37,7 +38,7 @@ const PrivacyPageFr = () => (
         <h2>Contact</h2>
         <p>
           Des questions sur cette politique&nbsp;? Consultez notre{" "}
-          <a href="/fr/contact">page de contact</a>.
+          <Link href="/fr/contact">page de contact</Link>.
         </p>
       </LegalLayout>
     </Page>

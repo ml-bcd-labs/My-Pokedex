@@ -22,7 +22,7 @@ import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsSt
 import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
 import { generationFromId } from "../../constants/Generations";
-import { baseStatTotal, enDetailDescription } from "../../utils/pokemonMeta";
+import { baseStatTotal, enDetailDescription, enDetailTitle } from "../../utils/pokemonMeta";
 import type { SwitchTarget } from "../../context/SwitchTargetContext";
 
 const MAX_STAT_VALUE = 200;
@@ -114,7 +114,7 @@ const DetailsPage = ({
   return (
     <>
       <Header
-        title={`${capitalizeFirstLetter(name)} (#${formatNumberToMatchLength(id)}) — Stats, Types, Weaknesses & Evolution | Pokédex`}
+        title={enDetailTitle(capitalizeFirstLetter(name), id)}
         description={enDetailDescription({
           name,
           category,

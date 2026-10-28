@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
@@ -8,7 +9,7 @@ const TermsPage = () => (
   <>
     <Header
       title={`Terms of Use for ${SITE_NAME} — Your Rights & Responsibilities`}
-      description={`The terms governing your use of ${SITE_NAME}: acceptable use of the site, its independently compiled Pokémon data, intellectual-property notices and disclaimers.`}
+      description={`The terms governing your use of ${SITE_NAME}: acceptable use, its independently compiled Pokémon data, intellectual-property notices and disclaimers.`}
       canonicalPath="/terms"
       alternates={hreflangAlternates("/terms", "/fr/terms")}
     />
@@ -24,7 +25,7 @@ const TermsPage = () => (
         <p>
           Pokémon and related marks are trademarks of Nintendo, Game Freak, and The
           Pokémon Company; {SITE_NAME} is unaffiliated (see our{" "}
-          <a href="/about">About page</a>). Independently compiled data on this site
+          <Link href="/about">About page</Link>). Independently compiled data on this site
           may be referenced with attribution.
         </p>
 

@@ -7,14 +7,8 @@ export const websiteJsonLd = (): JsonLd => ({
   "@type": "WebSite",
   name: SITE_NAME,
   url: SITE_ORIGIN,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${SITE_ORIGIN}/?name={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
+  // No potentialAction/SearchAction: Google retired the Sitelinks Searchbox on
+  // 21 Nov 2024, so it is inert markup.
 });
 
 export const organizationJsonLd = (): JsonLd => ({
@@ -25,15 +19,12 @@ export const organizationJsonLd = (): JsonLd => ({
   logo: absoluteUrl("/icons/icon-512.png"),
 });
 
-export const breadcrumbJsonLd = (
-  items: Array<{ name: string; path: string }>,
-  inLanguage?: string,
-): JsonLd => ({
+// No `inLanguage`: schema.org gives it no domain on BreadcrumbList/ItemList, so
+// it failed vocabulary validation on every FR detail page. The page language is
+// already declared by <html lang> and hreflang.
+export const breadcrumbJsonLd = (items: Array<{ name: string; path: string }>): JsonLd => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  // Only emit `inLanguage` when a caller passes it, so existing (EN) callers get
-  // a byte-identical object.
-  ...(inLanguage ? { inLanguage } : {}),
   itemListElement: items.map((item, index) => ({
     "@type": "ListItem",
     position: index + 1,

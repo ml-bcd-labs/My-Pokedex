@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
@@ -8,7 +9,7 @@ const PrivacyPage = () => (
   <>
     <Header
       title={`Privacy Policy — No Cookies, No Ads, No Tracking | ${SITE_NAME}`}
-      description={`How ${SITE_NAME} handles your data: no cookies, no advertising, no analytics and no third-party tracking. What the site stores locally and what it never collects.`}
+      description={`How ${SITE_NAME} handles your data: no cookies, no advertising, no analytics, no third-party tracking. What it stores locally and what it never collects.`}
       canonicalPath="/privacy"
       alternates={hreflangAlternates("/privacy", "/fr/privacy")}
     />
@@ -33,7 +34,7 @@ const PrivacyPage = () => (
 
         <h2>Contact</h2>
         <p>
-          Questions about this policy? See our <a href="/contact">contact page</a>.
+          Questions about this policy? See our <Link href="/contact">contact page</Link>.
         </p>
       </LegalLayout>
     </Page>

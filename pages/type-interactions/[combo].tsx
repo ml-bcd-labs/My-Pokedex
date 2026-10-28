@@ -13,6 +13,8 @@ import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
 import { capitalizeFirstLetter } from "../../utils/stringManipulation";
 import { enTypeComboItems, groupAlphabetically } from "../../utils/browseIndex";
+import { matchupSummary } from "../../utils/pokemonTypes/matchups";
+import { enComboDescription, enComboTitle } from "../../utils/pokemonMeta";
 import { useStrings } from "../../hooks/useLocale";
 import type { SwitchTarget } from "../../context/SwitchTargetContext";
 
@@ -30,8 +32,8 @@ const ComboPage = ({ combo, types }: IProps) => {
   return (
     <>
       <Header
-        title={`${label} ${noun} — Weaknesses, Resistances & Best Matchups | Pokédex`}
-        description={`Type effectiveness for ${label}: which types it is weak to, which it resists, and which it deals the most damage against.`}
+        title={enComboTitle(`${label} ${noun}`)}
+        description={enComboDescription(label, noun, matchupSummary(types))}
         canonicalPath={`/type-interactions/${combo}`}
         alternates={hreflangAlternates(`/type-interactions/${combo}`, `/fr/type-interactions/${toFrTypeSlug(types)}`)}
         jsonLd={breadcrumbJsonLd([

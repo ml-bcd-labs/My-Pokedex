@@ -96,14 +96,18 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }
 .list a {
-  display: block;
+  /* min-height 24px: WCAG 2.5.8 target size (was 20.8px on a 22.4px pitch).
+     Labels wrap instead of being ellipsis-clipped, so no text is lost under a
+     WCAG 1.4.12 text-spacing override or with long names. */
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 24px;
   padding: 0.15rem 0;
   font-size: 0.9rem;
   color: #1d4ed8;
   text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
 }
 .list a:hover {
   text-decoration: underline;

@@ -294,7 +294,9 @@
 /* ---- profile spec ---- */
 .spec {
   display: grid;
-  grid-template-columns: auto 1fr;
+  /* minmax(0,1fr): the value column may shrink below its min-content and wrap
+     ("110.0 kg (242.6 lbs)" in the pixel font overflowed at 320px). */
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 9px 16px;
   font-size: calc(14px * var(--font-scale));
 }

@@ -1,8 +1,17 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ABOUT, PRIVACY, CONTACT, TERMS } from "../../../constants/Routes";
+import {
+  ABOUT,
+  PRIVACY,
+  CONTACT,
+  TERMS,
+  FR_ABOUT,
+  FR_PRIVACY,
+  FR_CONTACT,
+  FR_TERMS,
+} from "../../../constants/Routes";
 import { SITE_NAME } from "../../../constants/Seo";
-import { useStrings } from "../../../hooks/useLocale";
+import { useLocale, useStrings } from "../../../hooks/useLocale";
 import styles from "./Footer.module.css";
 
 interface IProps {
@@ -13,6 +22,12 @@ interface IProps {
 
 const Footer = ({ embedded = false }: IProps) => {
   const strings = useStrings();
+  // Point each locale at its own legal pages (the FR routes exist under /fr).
+  const fr = useLocale() === "fr";
+  const about = fr ? FR_ABOUT : ABOUT;
+  const privacy = fr ? FR_PRIVACY : PRIVACY;
+  const contact = fr ? FR_CONTACT : CONTACT;
+  const terms = fr ? FR_TERMS : TERMS;
   // pathname (the route, no query/hash) is identical on the static prerender and
   // after hydration for these non-dynamic legal pages.
   const { pathname } = useRouter();
@@ -21,10 +36,10 @@ const Footer = ({ embedded = false }: IProps) => {
   return (
     <footer className={`${styles.footer}${embedded ? ` ${styles.embedded}` : ""}`}>
       <nav className={styles.links} aria-label={strings.footerNavLabel}>
-        <Link href={ABOUT} aria-current={current(ABOUT)}>{strings.footerAbout}</Link>
-        <Link href={PRIVACY} aria-current={current(PRIVACY)}>{strings.footerPrivacy}</Link>
-        <Link href={CONTACT} aria-current={current(CONTACT)}>{strings.footerContact}</Link>
-        <Link href={TERMS} aria-current={current(TERMS)}>{strings.footerTerms}</Link>
+        <Link href={about} aria-current={current(about)}>{strings.footerAbout}</Link>
+        <Link href={privacy} aria-current={current(privacy)}>{strings.footerPrivacy}</Link>
+        <Link href={contact} aria-current={current(contact)}>{strings.footerContact}</Link>
+        <Link href={terms} aria-current={current(terms)}>{strings.footerTerms}</Link>
       </nav>
       <p className={styles.disclaimer}>
         {SITE_NAME} {strings.footerDisclaimer}

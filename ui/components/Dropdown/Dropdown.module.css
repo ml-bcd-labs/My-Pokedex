@@ -3,7 +3,8 @@
   height: 38px;
   padding: 0 34px 0 16px;
   border-radius: 999px;
-  border: 1px solid #d7dce6;
+  /* #7d8699 keeps the select boundary >= 3:1 (WCAG 1.4.11) on the white header. */
+  border: 1px solid #7d8699;
   background-color: #f1f3f8;
   color: #41485a;
   font: inherit;
@@ -32,7 +33,7 @@
    `[data-theme="dark"] select { background: ... }` shorthand in App.module.css,
    which would otherwise reset both the colour and the chevron image. */
 :global([data-theme="dark"]) .select {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
   color: #e8ecf3;
   background-color: rgba(255, 255, 255, 0.06) !important;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aab2c2' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;

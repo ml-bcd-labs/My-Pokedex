@@ -2,13 +2,13 @@
   "schema_version": 1,
   "audit": "web-accessibility",
   "site": "my-pokedex",
-  "generated_at": "2026-10-29T17:33:56Z",
+  "generated_at": "2026-10-30T08:20:39Z",
   "target": {
-    "ref": "62cca2b93439165d8daec87450f07903ab45f0f1",
+    "ref": "6a043417887c2071fbb7e1d684d08895adf3771e",
     "url": "https://my-pokedex.com"
   },
-  "pages_audited": 22,
-  "report_path": "audits/web-accessibility/2026-10-29-report.md",
+  "pages_audited": 14,
+  "report_path": "audits/web-accessibility/2026-10-30-report.md",
   "checks_run": {
     "axe-violations": 1,
     "keyboard-operable": 1,
@@ -39,23 +39,10 @@
     "autocomplete-tokens": "The only form field is a free-text site search (autoComplete=off); no personal-data inputs exist that would carry autocomplete tokens.",
     "captions": "Site has no video or audio content (0 video/audio/iframe/object/embed on audited pages)."
   },
-  "issues": [
-    {
-      "check_id": "text-contrast",
-      "severity": "serious",
-      "count": 1,
-      "note": "WCAG 1.4.3: header search placeholder 'Search a Pokemon by name or id' is #41485a at ::placeholder opacity .55 on the #f1f3f8 pill = rgb(144,149,161), 2.70:1 (light) / 4.24:1 (dark); needs 4.5:1. Every page. ui/components/SearchInput/SearchInput.module.css:26-29. Not a regression (style unchanged since 3794b34); not measured on 10-28. Skip link (6.47:1) and card stat labels (7.16-7.97:1) from 10-28 are fixed."
-    },
-    {
-      "check_id": "ui-contrast",
-      "severity": "serious",
-      "count": 1,
-      "note": "WCAG 1.4.11 (portfolio rule: text-input borders <3:1 fail): search field and sort <select> pills are bounded only by 1px #d7dce6 border (1.38:1 vs the white header, 1.24:1 vs its fill) and #f1f3f8 fill (1.11:1); dark theme rgba(255,255,255,.14) border 1.51:1 on #121620. One shared token pair: SearchInput.module.css:10-11, Dropdown/Dropdown.module.css:6-7. Not a regression; newly counted."
-    }
-  ],
+  "issues": [],
   "issue_counts": {
     "critical": 0,
-    "serious": 2,
+    "serious": 0,
     "moderate": 0,
     "minor": 0
   }

@@ -2,13 +2,13 @@
   "schema_version": 1,
   "audit": "seo",
   "site": "my-pokedex",
-  "generated_at": "2026-10-29T17:33:56Z",
+  "generated_at": "2026-10-30T08:20:39Z",
   "target": {
-    "ref": "62cca2b93439165d8daec87450f07903ab45f0f1",
+    "ref": "6a043417887c2071fbb7e1d684d08895adf3771e",
     "url": "https://my-pokedex.com"
   },
   "pages_audited": 2404,
-  "report_path": "audits/seo/2026-10-29-report.md",
+  "report_path": "audits/seo/2026-10-30-report.md",
   "checks_run": {
     "raw-html-content": 1,
     "robots-txt-valid": 1,

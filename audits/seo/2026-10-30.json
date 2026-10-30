@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "audit": "seo",
+  "site": "my-pokedex",
+  "generated_at": "2026-10-30T08:20:39Z",
+  "target": {
+    "ref": "6a043417887c2071fbb7e1d684d08895adf3771e",
+    "url": "https://my-pokedex.com"
+  },
+  "pages_audited": 2404,
+  "report_path": "audits/seo/2026-10-30-report.md",
+  "checks_run": {
+    "raw-html-content": 1,
+    "robots-txt-valid": 1,
+    "robots-prod-vs-repo": 1,
+    "sitemap-valid": 1,
+    "canonical-present": 1,
+    "canonical-resolves-200": 1,
+    "host-canonicalization": 1,
+    "public-dns-resolution": 1,
+    "indexability-directives": 1,
+    "soft-404-real-status": 1,
+    "lastmod-honest": 1,
+    "title-unique": 1,
+    "title-length": 1,
+    "meta-description-unique": 2,
+    "meta-description-length": 1,
+    "single-h1": 1,
+    "html-lang": 1,
+    "viewport-meta": 1,
+    "hreflang-valid": 1,
+    "schema-valid": 1,
+    "schema-matches-content": 1,
+    "og-image-present": 1,
+    "open-graph-complete": 1,
+    "favicon-icon-set": 1,
+    "manifest-installable": 3,
+    "core-web-vitals": 1,
+    "security-headers": 2,
+    "ai-crawler-access": 1,
+    "publisher-identity-visible": 1,
+    "eeat-identity": 1,
+    "content-spam-guardrails": 1,
+    "orphaned-pages": 1,
+    "click-depth-exceeded": 1
+  },
+  "checks_skipped": {
+    "ads-txt-valid": "Ad-free site; AdSense abandoned 2026-07-09 (Nintendo IP), no ad code on any of the 2404 crawled pages; no ads.txt needed",
+    "ad-unit-renders": "Ad-free site; no ad loader script on any of the 2404 crawled pages",
+    "publisher-id-correct": "Ad-free site; no ad publisher ID present",
+    "cmp-consent-footer": "No CMP; consent-requiring analytics (GA4) removed in commit 7da08ec (0/2404 pages load gtag/GTM); privacy policy states no cookies/ads/analytics",
+    "consent-mode-region-scoped": "No analytics or Consent Mode; site sets no tracking cookies"
+  },
+  "issues": [
+    {
+      "check_id": "eeat-identity",
+      "severity": "moderate",
+      "count": 1,
+      "note": "ACCEPTED, INTENTIONAL (owner rule: Pokémon is Nintendo IP, the site must carry no author/publisher/Organization/byline claim; 62cca2b removed the Organization JSON-LD and the site © line on purpose). No identifiable person/entity, contact is a mailto, no outbound data-source citations. Recorded for registry honesty; not an action item; never add or fabricate an identity."
+    }
+  ],
+  "issue_counts": {
+    "critical": 0,
+    "serious": 0,
+    "moderate": 1,
+    "minor": 0
+  }
+}
